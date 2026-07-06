@@ -50,6 +50,12 @@ build-vue:
 	cd web/vue && yarn run build
 	cp -r web/vue/dist/* web/public/
 
+.PHONY: build-vue3
+build-vue3:
+	cd web/vue3 && npm run build
+	cp -r web/vue3/dist/* web/public/
+	cd cmd/gocron && go run github.com/rakyll/statik -src=../../web/public -dest=../../internal -f
+
 .PHONY: install-vue
 install-vue:
 	cd web/vue && yarn install
