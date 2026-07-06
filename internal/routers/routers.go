@@ -3,7 +3,9 @@ package routers
 import (
 	"io"
 	"log"
+	"mime"
 	"net/http"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -201,15 +203,33 @@ func RegisterMiddleware(m *macaron.Macaron) {
 	if macaron.Env != macaron.DEV {
 		m.Use(gzip.Gziper())
 	}
-	m.Use(
-		macaron.Static(
-			"",
-			macaron.StaticOptions{
-				Prefix:     staticDir,
-				FileSystem: statikFS,
-			},
-		),
-	)
+	// 自定义静态文件服务 — 使用 statik 虚拟文件系统并正确设置 MIME 类型
+	m.Use(func(ctx *macaron.Context) {
+		urlPath := ctx.Req.URL.Path
+		if urlPath == "/" {
+			return
+		}
+
+		file, err := statikFS.Open(urlPath)
+		if err != nil {
+			return
+		}
+		defer file.Close()
+
+		ext := filepath.Ext(urlPath)
+		mimeType := mime.TypeByExtension(ext)
+		if mimeType == "" {
+			mimeType = "application/octet-stream"
+		}
+		ctx.Resp.Header().Set("Content-Type", mimeType)
+
+		stat, err := file.Stat()
+		if err == nil {
+			ctx.Resp.Header().Set("Content-Length", strconv.FormatInt(stat.Size(), 10))
+		}
+
+		io.Copy(ctx.Resp, file)
+	})
 	if macaron.Env == macaron.DEV {
 		m.Use(toolbox.Toolboxer(m))
 	}
