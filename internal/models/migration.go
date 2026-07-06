@@ -43,13 +43,14 @@ func (migration *Migration) Upgrade(oldVersionId int) {
 		return
 	}
 
-	versionIds := []int{110, 122, 130, 140, 150}
+	versionIds := []int{110, 122, 130, 140, 150, 160}
 	upgradeFuncs := []func(*xorm.Session) error{
 		migration.upgradeFor110,
 		migration.upgradeFor122,
 		migration.upgradeFor130,
 		migration.upgradeFor140,
 		migration.upgradeFor150,
+		migration.upgradeFor160,
 	}
 
 	startIndex := -1
@@ -234,4 +235,26 @@ func (m *Migration) upgradeFor150(session *xorm.Session) error {
 	logger.Info("已升级到v1.5\n")
 
 	return nil
+}
+
+// 升级到v1.6版本
+func (m *Migration) upgradeFor160(session *xorm.Session) error {
+	logger.Info("开始升级到v1.6")
+
+	tableName := TablePrefix + "task"
+	// 新增 request_params 字段
+	sql := fmt.Sprintf(
+		"ALTER TABLE %s ADD COLUMN request_params TEXT DEFAULT '' AFTER command", tableName)
+	_, err := session.Exec(sql)
+	if err != nil {
+		return err
+	}
+
+	// 迁移通知类型: 旧 Webhook(3) → 新 Webhook(4)
+	// 旧 Slack(2) 配置作废, 由用户在界面重新配置飞书
+	_, err = session.Exec(fmt.Sprintf("UPDATE %s SET notify_type = 4 WHERE notify_type = 3", tableName))
+
+	logger.Info("已升级到v1.6\n")
+
+	return err
 }
