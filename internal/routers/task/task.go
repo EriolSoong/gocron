@@ -37,6 +37,7 @@ type TaskForm struct {
 	NotifyType       int8 `binding:"In(1,2,3,4)"`
 	NotifyReceiverId string
 	NotifyKeyword    string
+	RequestParams    string `binding:"MaxSize(65535)"`
 }
 
 func (f TaskForm) Error(ctx *macaron.Context, errs binding.Errors) {
@@ -119,6 +120,7 @@ func Store(ctx *macaron.Context, form TaskForm) string {
 	taskModel.NotifyType = form.NotifyType - 1
 	taskModel.NotifyReceiverId = form.NotifyReceiverId
 	taskModel.NotifyKeyword = form.NotifyKeyword
+	taskModel.RequestParams = form.RequestParams
 	taskModel.Spec = form.Spec
 	taskModel.Level = form.Level
 	taskModel.DependencyStatus = form.DependencyStatus

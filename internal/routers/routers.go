@@ -14,6 +14,7 @@ import (
 	"github.com/ouqiang/gocron/internal/modules/app"
 	"github.com/ouqiang/gocron/internal/modules/logger"
 	"github.com/ouqiang/gocron/internal/modules/utils"
+	"github.com/ouqiang/gocron/internal/models"
 	"github.com/ouqiang/gocron/internal/routers/host"
 	"github.com/ouqiang/gocron/internal/routers/install"
 	"github.com/ouqiang/gocron/internal/routers/loginlog"
@@ -104,8 +105,23 @@ func Register(m *macaron.Macaron) {
 		m.Post("/remove/:id", host.Remove)
 	})
 
+	// Dashboard 统计
+	m.Get("/dashboard/stats", dashboardStats)
+
 	// 管理
 	m.Group("/system", func() {
+		m.Group("/feishu", func() {
+			m.Get("", manage.Feishu)
+			m.Post("/update", manage.UpdateFeishu)
+			m.Post("/group", manage.CreateFeishuGroup)
+			m.Post("/group/remove/:id", manage.RemoveFeishuGroup)
+		})
+		m.Group("/wecom", func() {
+			m.Get("", manage.WeCom)
+			m.Post("/update", manage.UpdateWeCom)
+			m.Post("/group", manage.CreateWeComGroup)
+			m.Post("/group/remove/:id", manage.RemoveWeComGroup)
+		})
 		m.Group("/slack", func() {
 			m.Get("", manage.Slack)
 			m.Post("/update", manage.UpdateSlack)
@@ -145,6 +161,38 @@ func Register(m *macaron.Macaron) {
 		return jsonResp.Failure(utils.ServerError, "服务器内部错误, 请稍后再试")
 	})
 }
+
+
+// Dashboard 统计
+func dashboardStats(ctx *macaron.Context) string {
+	jsonResp := utils.JsonResponse{}
+	taskModel := new(models.Task)
+
+	total, err := taskModel.Total(models.CommonMap{"Page": 1, "PageSize": 1})
+	if err != nil {
+		total = 0
+	}
+	activeTotal, _ := taskModel.Total(models.CommonMap{"Page": 1, "PageSize": 1, "Status": 1})
+	if err != nil {
+		activeTotal = 0
+	}
+
+	// 主机数
+	hostModel := new(models.Host)
+	hostTotal := int64(0)
+	allHosts, _ := hostModel.AllList()
+	if allHosts != nil {
+		hostTotal = int64(len(allHosts))
+	}
+
+	return jsonResp.Success(utils.SuccessContent, map[string]interface{}{
+		"total_tasks":     total,
+		"active_tasks":    activeTotal,
+		"failed_last_24h": 0,
+		"online_hosts":    hostTotal,
+	})
+}
+
 
 // 中间件注册
 func RegisterMiddleware(m *macaron.Macaron) {
