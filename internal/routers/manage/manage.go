@@ -127,4 +127,83 @@ func UpdateWebHook(ctx *macaron.Context) string {
 	return utils.JsonResponseByErr(err)
 }
 
+// region 飞书
+func Feishu(ctx *macaron.Context) string {
+	settingModel := new(models.Setting)
+	fs, err := settingModel.Feishu()
+	jsonResp := utils.JsonResponse{}
+	if err != nil {
+		logger.Error(err)
+		return jsonResp.Success(utils.SuccessContent, nil)
+	}
+
+	return jsonResp.Success("", fs)
+}
+
+func UpdateFeishu(ctx *macaron.Context) string {
+	url := ctx.QueryTrim("url")
+	secret := ctx.QueryTrim("secret")
+	template := ctx.QueryTrim("template")
+	settingModel := new(models.Setting)
+	err := settingModel.UpdateFeishu(url, secret, template)
+
+	return utils.JsonResponseByErr(err)
+}
+
+func CreateFeishuGroup(ctx *macaron.Context) string {
+	name := ctx.QueryTrim("name")
+	settingModel := new(models.Setting)
+	_, err := settingModel.CreateFeishuGroup(name)
+
+	return utils.JsonResponseByErr(err)
+}
+
+func RemoveFeishuGroup(ctx *macaron.Context) string {
+	id := ctx.ParamsInt(":id")
+	settingModel := new(models.Setting)
+	_, err := settingModel.RemoveFeishuGroup(id)
+
+	return utils.JsonResponseByErr(err)
+}
+// endregion
+
+// region 企业微信
+func WeCom(ctx *macaron.Context) string {
+	settingModel := new(models.Setting)
+	wc, err := settingModel.WeCom()
+	jsonResp := utils.JsonResponse{}
+	if err != nil {
+		logger.Error(err)
+		return jsonResp.Success(utils.SuccessContent, nil)
+	}
+
+	return jsonResp.Success("", wc)
+}
+
+func UpdateWeCom(ctx *macaron.Context) string {
+	url := ctx.QueryTrim("url")
+	template := ctx.QueryTrim("template")
+	settingModel := new(models.Setting)
+	err := settingModel.UpdateWeCom(url, template)
+
+	return utils.JsonResponseByErr(err)
+}
+
+func CreateWeComGroup(ctx *macaron.Context) string {
+	name := ctx.QueryTrim("name")
+	settingModel := new(models.Setting)
+	_, err := settingModel.CreateWeComGroup(name)
+
+	return utils.JsonResponseByErr(err)
+}
+
+func RemoveWeComGroup(ctx *macaron.Context) string {
+	id := ctx.ParamsInt(":id")
+	settingModel := new(models.Setting)
+	_, err := settingModel.RemoveWeComGroup(id)
+
+	return utils.JsonResponseByErr(err)
+}
+// endregion
+
 // endregion

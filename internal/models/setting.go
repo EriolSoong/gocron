@@ -55,6 +55,21 @@ const (
 	WebhookUrlKey      = "url"
 )
 
+const (
+	FeishuCode         = "feishu"
+	FeishuUrlKey       = "url"
+	FeishuSecretKey    = "secret"
+	FeishuTemplateKey  = "template"
+	FeishuGroupKey     = "group"
+)
+
+const (
+	WeComCode          = "wecom"
+	WeComUrlKey        = "url"
+	WeComTemplateKey   = "template"
+	WeComGroupKey      = "group"
+)
+
 // 初始化基本字段 邮件、slack等
 func (setting *Setting) InitBasicField() {
 	setting.Code = SlackCode
@@ -291,4 +306,126 @@ func (setting *Setting) UpdateWebHook(url, template string) error {
 	return nil
 }
 
+// region 飞书配置
+type FeishuSetting struct {
+	Url      string         `json:"url"`
+	Secret   string         `json:"secret"`
+	Template string         `json:"template"`
+	Groups   []FeishuGroup  `json:"groups"`
+}
+
+type FeishuGroup struct {
+	Id   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+func (setting *Setting) Feishu() (FeishuSetting, error) {
+	list := make([]Setting, 0)
+	err := Db.Where("code = ?", FeishuCode).Find(&list)
+	fs := FeishuSetting{Groups: make([]FeishuGroup, 0)}
+	if err != nil {
+		return fs, err
+	}
+
+	for _, v := range list {
+		switch v.Key {
+		case FeishuUrlKey:
+			fs.Url = v.Value
+		case FeishuSecretKey:
+			fs.Secret = v.Value
+		case FeishuTemplateKey:
+			fs.Template = v.Value
+		default:
+			fs.Groups = append(fs.Groups, FeishuGroup{v.Id, v.Value})
+		}
+	}
+
+	return fs, nil
+}
+
+func (setting *Setting) UpdateFeishu(url, secret, template string) error {
+	setting.Value = url
+	Db.Cols("value").Update(setting, Setting{Code: FeishuCode, Key: FeishuUrlKey})
+
+	setting.Value = secret
+	Db.Cols("value").Update(setting, Setting{Code: FeishuCode, Key: FeishuSecretKey})
+
+	setting.Value = template
+	Db.Cols("value").Update(setting, Setting{Code: FeishuCode, Key: FeishuTemplateKey})
+
+	return nil
+}
+
+func (setting *Setting) CreateFeishuGroup(name string) (int64, error) {
+	setting.Code = FeishuCode
+	setting.Key = FeishuGroupKey
+	setting.Value = name
+	return Db.Insert(setting)
+}
+
+func (setting *Setting) RemoveFeishuGroup(id int) (int64, error) {
+	setting.Code = FeishuCode
+	setting.Key = FeishuGroupKey
+	setting.Id = id
+	return Db.Delete(setting)
+}
+// endregion
+
+// region 企业微信配置
+type WeComSetting struct {
+	Url      string       `json:"url"`
+	Template string       `json:"template"`
+	Groups   []WeComGroup `json:"groups"`
+}
+
+type WeComGroup struct {
+	Id   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+func (setting *Setting) WeCom() (WeComSetting, error) {
+	list := make([]Setting, 0)
+	err := Db.Where("code = ?", WeComCode).Find(&list)
+	ws := WeComSetting{Groups: make([]WeComGroup, 0)}
+	if err != nil {
+		return ws, err
+	}
+
+	for _, v := range list {
+		switch v.Key {
+		case WeComUrlKey:
+			ws.Url = v.Value
+		case WeComTemplateKey:
+			ws.Template = v.Value
+		default:
+			ws.Groups = append(ws.Groups, WeComGroup{v.Id, v.Value})
+		}
+	}
+
+	return ws, nil
+}
+
+func (setting *Setting) UpdateWeCom(url, template string) error {
+	setting.Value = url
+	Db.Cols("value").Update(setting, Setting{Code: WeComCode, Key: WeComUrlKey})
+
+	setting.Value = template
+	Db.Cols("value").Update(setting, Setting{Code: WeComCode, Key: WeComTemplateKey})
+
+	return nil
+}
+
+func (setting *Setting) CreateWeComGroup(name string) (int64, error) {
+	setting.Code = WeComCode
+	setting.Key = WeComGroupKey
+	setting.Value = name
+	return Db.Insert(setting)
+}
+
+func (setting *Setting) RemoveWeComGroup(id int) (int64, error) {
+	setting.Code = WeComCode
+	setting.Key = WeComGroupKey
+	setting.Id = id
+	return Db.Delete(setting)
+}
 // endregion

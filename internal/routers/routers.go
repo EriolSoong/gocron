@@ -3,7 +3,9 @@ package routers
 import (
 	"io"
 	"log"
+	"mime"
 	"net/http"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -14,6 +16,7 @@ import (
 	"github.com/ouqiang/gocron/internal/modules/app"
 	"github.com/ouqiang/gocron/internal/modules/logger"
 	"github.com/ouqiang/gocron/internal/modules/utils"
+	"github.com/ouqiang/gocron/internal/models"
 	"github.com/ouqiang/gocron/internal/routers/host"
 	"github.com/ouqiang/gocron/internal/routers/install"
 	"github.com/ouqiang/gocron/internal/routers/loginlog"
@@ -104,8 +107,23 @@ func Register(m *macaron.Macaron) {
 		m.Post("/remove/:id", host.Remove)
 	})
 
+	// Dashboard 统计
+	m.Get("/dashboard/stats", dashboardStats)
+
 	// 管理
 	m.Group("/system", func() {
+		m.Group("/feishu", func() {
+			m.Get("", manage.Feishu)
+			m.Post("/update", manage.UpdateFeishu)
+			m.Post("/group", manage.CreateFeishuGroup)
+			m.Post("/group/remove/:id", manage.RemoveFeishuGroup)
+		})
+		m.Group("/wecom", func() {
+			m.Get("", manage.WeCom)
+			m.Post("/update", manage.UpdateWeCom)
+			m.Post("/group", manage.CreateWeComGroup)
+			m.Post("/group/remove/:id", manage.RemoveWeComGroup)
+		})
 		m.Group("/slack", func() {
 			m.Get("", manage.Slack)
 			m.Post("/update", manage.UpdateSlack)
@@ -146,6 +164,38 @@ func Register(m *macaron.Macaron) {
 	})
 }
 
+
+// Dashboard 统计
+func dashboardStats(ctx *macaron.Context) string {
+	jsonResp := utils.JsonResponse{}
+	taskModel := new(models.Task)
+
+	total, err := taskModel.Total(models.CommonMap{"Page": 1, "PageSize": 1})
+	if err != nil {
+		total = 0
+	}
+	activeTotal, _ := taskModel.Total(models.CommonMap{"Page": 1, "PageSize": 1, "Status": 1})
+	if err != nil {
+		activeTotal = 0
+	}
+
+	// 主机数
+	hostModel := new(models.Host)
+	hostTotal := int64(0)
+	allHosts, _ := hostModel.AllList()
+	if allHosts != nil {
+		hostTotal = int64(len(allHosts))
+	}
+
+	return jsonResp.Success(utils.SuccessContent, map[string]interface{}{
+		"total_tasks":     total,
+		"active_tasks":    activeTotal,
+		"failed_last_24h": 0,
+		"online_hosts":    hostTotal,
+	})
+}
+
+
 // 中间件注册
 func RegisterMiddleware(m *macaron.Macaron) {
 	m.Use(macaron.Logger())
@@ -153,15 +203,33 @@ func RegisterMiddleware(m *macaron.Macaron) {
 	if macaron.Env != macaron.DEV {
 		m.Use(gzip.Gziper())
 	}
-	m.Use(
-		macaron.Static(
-			"",
-			macaron.StaticOptions{
-				Prefix:     staticDir,
-				FileSystem: statikFS,
-			},
-		),
-	)
+	// 自定义静态文件服务 — 使用 statik 虚拟文件系统并正确设置 MIME 类型
+	m.Use(func(ctx *macaron.Context) {
+		urlPath := ctx.Req.URL.Path
+		if urlPath == "/" {
+			return
+		}
+
+		file, err := statikFS.Open(urlPath)
+		if err != nil {
+			return
+		}
+		defer file.Close()
+
+		ext := filepath.Ext(urlPath)
+		mimeType := mime.TypeByExtension(ext)
+		if mimeType == "" {
+			mimeType = "application/octet-stream"
+		}
+		ctx.Resp.Header().Set("Content-Type", mimeType)
+
+		stat, err := file.Stat()
+		if err == nil {
+			ctx.Resp.Header().Set("Content-Length", strconv.FormatInt(stat.Size(), 10))
+		}
+
+		io.Copy(ctx.Resp, file)
+	})
 	if macaron.Env == macaron.DEV {
 		m.Use(toolbox.Toolboxer(m))
 	}

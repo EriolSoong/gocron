@@ -17,6 +17,14 @@ type Notifiable interface {
 
 var queue = make(chan Message, 100)
 
+const defaultNotifyTemplate = `
+任务ID:  {{.TaskId}}
+任务名称: {{.TaskName}}
+状态:    {{.Status}}
+执行结果: {{.Result}}
+备注: {{.Remark}}
+`
+
 func init() {
 	go run()
 }
@@ -46,10 +54,14 @@ func run() {
 			mail := Mail{}
 			go mail.Send(msg)
 		case 2:
-			// Slack
-			slack := Slack{}
-			go slack.Send(msg)
+			// 飞书
+			feishu := Feishu{}
+			go feishu.Send(msg)
 		case 3:
+			// 企业微信
+			weCom := WeCom{}
+			go weCom.Send(msg)
+		case 4:
 			// WebHook
 			webHook := WebHook{}
 			go webHook.Send(msg)
