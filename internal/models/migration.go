@@ -1,7 +1,6 @@
 package models
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 
@@ -20,18 +19,26 @@ func (migration *Migration) Install(dbName string) error {
 	}
 	for _, table := range tables {
 		exist, err := Db.IsTableExist(table)
-		if exist {
-			return errors.New("数据表已存在")
-		}
 		if err != nil {
 			return err
 		}
+		// Sync2: 表不存在则创建，已存在则自动同步字段（添加缺失列）
 		err = Db.Sync2(table)
 		if err != nil {
 			return err
 		}
+		if !exist {
+			logger.Infof("创建表: %T", table)
+		} else {
+			logger.Infof("表已存在，同步结构: %T", table)
+		}
 	}
-	setting.InitBasicField()
+
+	// 仅当 setting 表为空时才初始化基础配置
+	count, _ := Db.Count(setting)
+	if count == 0 {
+		setting.InitBasicField()
+	}
 
 	return nil
 }
