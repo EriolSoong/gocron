@@ -10,7 +10,11 @@ let store = null
 export function initStore(s) { store = s }
 
 // POST 请求默认用表单格式，gocron 后端 go-macaron binding 只解析 x-www-form-urlencoded
+// 并自动附加 Auth-Token 请求头
 request.interceptors.request.use(config => {
+  if (store && store.token) {
+    config.headers['Auth-Token'] = store.token
+  }
   if (config.method === 'post' && config.data && !(config.data instanceof FormData) && typeof config.data === 'object') {
     config.data = new URLSearchParams(config.data)
     config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
