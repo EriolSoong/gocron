@@ -15,7 +15,7 @@
           <el-button type="primary" :icon="Search" @click="loadTasks">搜索</el-button>
         </div>
         <div class="actions">
-          <el-button v-if="userStore.isAdmin" type="primary" @click="$router.push('/task/create')"><el-icon><Plus /></el-icon> 新增任务</el-button>
+          <el-button v-if="userStore.isAdmin" type="primary" @click="openCreate"><el-icon><Plus /></el-icon> 新增任务</el-button>
           <el-button @click="loadTasks" :icon="Refresh">刷新</el-button>
         </div>
       </div>
@@ -58,7 +58,7 @@
           <template #default="{row}">
             <span class="hide-mobile">
               <el-button size="small" type="success" @click="runTask(row)">执行</el-button>
-              <el-button text size="small" type="primary" @click="$router.push('/task/edit/'+row.id)">编辑</el-button>
+              <el-button text size="small" type="primary" @click="openEdit(row.id)">编辑</el-button>
               <el-button text size="small" type="primary" @click="$router.push('/task/log?task_id='+row.id)">日志</el-button>
               <el-popconfirm title="确定删除?" @confirm="removeTask(row)"><template #reference><el-button text size="small" type="danger">删除</el-button></template></el-popconfirm>
             </span>
@@ -67,7 +67,7 @@
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item @click="runTask(row)">执行</el-dropdown-item>
-                  <el-dropdown-item @click="$router.push('/task/edit/'+row.id)">编辑</el-dropdown-item>
+                  <el-dropdown-item @click="openEdit(row.id)">编辑</el-dropdown-item>
                   <el-dropdown-item @click="$router.push('/task/log?task_id='+row.id)">日志</el-dropdown-item>
                   <el-dropdown-item divided @click="removeTask(row)">删除</el-dropdown-item>
                 </el-dropdown-menu>
@@ -81,6 +81,7 @@
         <el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" :page-sizes="[20,50,100]" layout="sizes,prev,pager,next,total" background @change="loadTasks" />
       </div>
     </div>
+    <TaskFormDialog v-model="dialogVisible" :task-id="editingTaskId" @saved="loadTasks" />
   </div>
 </template>
 <script setup>
@@ -90,6 +91,7 @@ import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import StatCard from '@/components/StatCard.vue'
 import TaskDetail from '@/components/TaskDetail.vue'
+import TaskFormDialog from '@/pages/task/edit.vue'
 import taskService from '@/api/task'
 import parser from 'cron-parser'
 
@@ -101,6 +103,18 @@ const page = ref(1)
 const pageSize = ref(20)
 const search = reactive({ name: '', protocol: '', status: '' })
 const stats = reactive({ total_tasks: 0, active_tasks: 0, failed_last_24h: 0, online_hosts: 0 })
+const dialogVisible = ref(false)
+const editingTaskId = ref(null)
+
+function openCreate() {
+  editingTaskId.value = null
+  dialogVisible.value = true
+}
+
+function openEdit(id) {
+  editingTaskId.value = id
+  dialogVisible.value = true
+}
 
 function nextRun(spec) {
   if (!spec) return '-'

@@ -1,7 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import Dashboard from '@/pages/dashboard/index.vue'
-import TaskEdit from '@/pages/task/edit.vue'
 import TaskLog from '@/pages/taskLog/list.vue'
 import HostList from '@/pages/host/list.vue'
 import HostEdit from '@/pages/host/edit.vue'
@@ -21,8 +20,6 @@ import NotFound from '@/components/NotFound.vue'
 const routes = [
   { path: '/', redirect: '/dashboard' },
   { path: '/dashboard', name: 'dashboard', component: Dashboard },
-  { path: '/task/create', name: 'task-create', component: TaskEdit },
-  { path: '/task/edit/:id', name: 'task-edit', component: TaskEdit },
   { path: '/task/log', name: 'task-log', component: TaskLog },
   { path: '/host', name: 'host-list', component: HostList },
   { path: '/host/create', name: 'host-create', component: HostEdit },
