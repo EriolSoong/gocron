@@ -37,10 +37,10 @@
         </el-table-column>
         <el-table-column prop="spec" label="cron" width="110" />
         <el-table-column label="方式" width="80"><template #default="{row}">{{ row.protocol===2?'shell':'http' }}</template></el-table-column>
-        <el-table-column label="状态" width="80">
-          <template #default="{row}"><span :style="{color:row.status===1? 'var(--color-success)':'var(--color-danger)'}">● {{ row.status===1?'运行中':'已停止' }}</span></template>
+        <el-table-column label="状态" width="100">
+          <template #default="{row}"><el-tag size="small" :type="row.status===1?'success':'danger'" effect="dark">{{ row.status===1?'运行中':'已停止' }}</el-tag></template>
         </el-table-column>
-        <el-table-column label="操作" width="190" fixed="right">
+        <el-table-column label="操作" min-width="230" fixed="right" class-name="action-col">
           <template #default="{row}">
             <el-button text size="small" type="primary" @click="runTask(row)">执行</el-button>
             <el-button text size="small" type="primary" @click="$router.push('/task/edit/'+row.id)">编辑</el-button>
@@ -99,4 +99,5 @@ function fmt(t) {
 .search-bar { display: flex; align-items: center; gap: 8px; flex: 1; }
 .actions { display: flex; gap: 8px; }
 .pagination { display: flex; justify-content: flex-end; margin-top: 16px; }
+:deep(.action-col .cell) { white-space: nowrap; }
 </style>

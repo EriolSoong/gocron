@@ -152,15 +152,28 @@ func writeConfig(form InstallForm) error {
 	return setting.Write(dbConfig, app.AppConfig)
 }
 
-// 创建管理员账号
+// 创建或更新管理员账号
 func createAdminUser(form InstallForm) error {
 	user := new(models.User)
+
+	exist, err := user.UsernameExists(form.AdminUsername, 0)
+	if err != nil {
+		return err
+	}
+
+	if exist > 0 {
+		// 用户已存在，先删除再重建
+		_, err = models.Db.Where("name = ?", form.AdminUsername).Delete(user)
+		if err != nil {
+			return err
+		}
+	}
+
 	user.Name = form.AdminUsername
 	user.Password = form.AdminPassword
 	user.Email = form.AdminEmail
 	user.IsAdmin = 1
-	_, err := user.Create()
-
+	_, err = user.Create()
 	return err
 }
 
