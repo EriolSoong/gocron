@@ -16,7 +16,7 @@
         <el-table-column prop="name" label="主机名" width="180" />
         <el-table-column prop="port" label="端口" width="80" />
         <el-table-column prop="remark" label="备注" />
-        <el-table-column label="操作" width="240" fixed="right">
+        <el-table-column label="操作" width="240" fixed="right" align="center" header-align="center">
           <template #default="{row}">
             <span class="hide-mobile">
             <el-button size="small" type="primary" @click="$router.push('/host/edit/'+row.id)">编辑</el-button>

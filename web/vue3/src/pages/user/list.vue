@@ -9,7 +9,7 @@
         <el-table-column prop="email" label="邮箱" />
         <el-table-column label="角色" width="100"><template #default="{row}"><el-tag :type="row.is_admin===1?'danger':'info'" size="small">{{ row.is_admin===1?'管理员':'普通用户' }}</el-tag></template></el-table-column>
         <el-table-column label="状态" width="80"><template #default="{row}"><el-switch v-model="row.status" :active-value="1" :inactive-value="0" @change="toggleStatus(row)" /></template></el-table-column>
-        <el-table-column label="操作" width="240">
+        <el-table-column label="操作" width="240" align="center" header-align="center">
           <template #default="{row}">
             <span class="hide-mobile">
             <el-button size="small" type="primary" @click="$router.push('/user/edit/'+row.id)">编辑</el-button>

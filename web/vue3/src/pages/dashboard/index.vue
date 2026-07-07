@@ -54,7 +54,7 @@
             <span class="status-text">{{ row.status===1?'运行中':'已停止' }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="230" fixed="right" class-name="action-col" header-align="center">
+        <el-table-column label="操作" min-width="230" fixed="right" class-name="action-col" align="center" header-align="center">
           <template #default="{row}">
             <span class="hide-mobile">
               <el-button size="small" type="success" @click="runTask(row)">执行</el-button>
@@ -134,11 +134,6 @@ function removeTask(row) { taskService.remove(row.id, () => loadTasks()) }
 .search-bar { display: flex; align-items: center; gap: 8px; flex: 1; }
 .actions { display: flex; gap: 8px; }
 .pagination { display: flex; justify-content: flex-end; margin-top: 20px; }
-
-/* 操作列 — 内容居中 */
-:deep(.task-table .el-table__body-wrapper td.el-table__cell:nth-child(6)) {
-  text-align: center;
-}
 
 /* ===== 名称列 ===== */
 .name-cell {
