@@ -1,24 +1,8 @@
-FROM golang:1.15-alpine as builder
+FROM alpine:3.19
 
-RUN apk update \
-    && apk add --no-cache git ca-certificates make bash yarn nodejs
-
-RUN go env -w GO111MODULE=on && \
-    go env -w GOPROXY=https://goproxy.cn,direct
-
-WORKDIR /app
-
-RUN git clone https://github.com/ouqiang/gocron.git \
-    && cd gocron \
-    && yarn config set ignore-engines true \
-    && make install-vue \
-    && make build-vue \
-    && make statik \
-    && CGO_ENABLED=0 make gocron
-
-FROM alpine:3.12
-
-RUN apk add --no-cache ca-certificates tzdata \
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
+    && apk update \
+    && apk add --no-cache ca-certificates tzdata \
     && addgroup -S app \
     && adduser -S -g app app
 
@@ -26,7 +10,12 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 WORKDIR /app
 
-COPY --from=builder /app/gocron/bin/gocron .
+# 复制本地构建的静态二进制（由 make build-linux 产出）
+COPY bin/gocron-linux-amd64 ./gocron
+
+# 创建默认配置文件，安装向导会回写数据库配置
+RUN mkdir -p /app/conf \
+    && printf '[default]\ndb.engine=mysql\ndb.host=127.0.0.1\ndb.port=3306\ndb.user=\ndb.password=\ndb.database=\nallow_ips=\n' > /app/conf/app.ini
 
 RUN chown -R app:app ./
 
