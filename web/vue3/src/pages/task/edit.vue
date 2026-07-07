@@ -27,7 +27,7 @@
         <el-form-item v-if="form.level===1" label="crontab 表达式" prop="spec">
           <el-input v-model="form.spec" placeholder="秒 分 时 天 月 周" />
           <div v-if="cronPreview" class="cron-box valid">
-            <div class="cron-main"><span class="cron-icon">⏱️</span><div><div class="cron-label">下次执行时间</div><div class="cron-time">{{ cronPreview }}</div></div></div>
+            <div class="cron-main"><span class="cron-icon">⏱️</span><span class="cron-label">下次执行时间</span><span class="cron-time">{{ cronPreview }}</span></div>
           </div>
           <div v-if="cronError" class="cron-box error">
             <span>{{ cronError }}</span>
@@ -238,6 +238,6 @@ function formatJson() {
 .cron-box.error { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
 .cron-main { display: flex; align-items: center; gap: 12px; }
 .cron-icon { font-size: 20px; }
-.cron-label { font-size: 12px; color: #666; margin-bottom: 2px; }
+.cron-label { font-size: 12px; color: #666; }
 .cron-time { font-size: 18px; font-weight: 700; color: #16a34a; font-family: monospace; }
 </style>
