@@ -39,36 +39,11 @@ docker rm -f "${CONTAINER_NAME}" 2>/dev/null || true
 echo "" && echo "[4/4] 启动容器..."
 mkdir -p "${CONF_DIR}" "${LOG_DIR}" "${DATA_DIR}"
 
-# 首次部署：创建默认配置文件，安装向导会回写数据库配置
-if [ ! -f "${CONF_DIR}/app.ini" ]; then
-    cat > "${CONF_DIR}/app.ini" << 'EOF'
-[default]
-db.engine=mysql
-db.host=127.0.0.1
-db.port=3306
-db.user=
-db.password=
-db.database=
-db.prefix=
-db.charset=utf8
-db.max.idle.conns=30
-db.max.open.conns=100
-allow_ips=
-app.name=定时任务管理系统
-api.key=
-api.secret=
-api.sign.enable=true
-concurrency.queue=500
-auth_secret=
-enable_tls=false
-ca_file=
-cert_file=
-key_file=
-EOF
+# 首次部署提示
+if [ ! -f "${CONF_DIR}/install.lock" ]; then
     echo ""
-    echo "  🆕 首次部署: 已创建默认配置 ${CONF_DIR}/app.ini"
-    echo "  容器启动后访问 http://localhost:${HOST_PORT} 进入安装向导"
-    echo "  安装完成后数据库配置将自动回写到该文件"
+    echo "  🆕 首次部署: 访问 http://localhost:${HOST_PORT} 进入安装向导"
+    echo "  安装完成后配置文件将保存到 ${CONF_DIR}/app.ini"
     echo ""
 fi
 
