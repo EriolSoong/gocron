@@ -180,14 +180,23 @@ function updatePort(t) {
 }
 
 function nextStep() {
-  formRef.value?.validateField(['db_type', 'db_host', 'db_port', 'db_username', 'db_password', 'db_name'], (valid) => {
-    if (valid) step.value = 1
-  })
+  const missing = []
+  if (!form.db_type) missing.push('数据库类型')
+  if (!form.db_host) missing.push('主机地址')
+  if (!form.db_port) missing.push('端口')
+  if (!form.db_username) missing.push('数据库用户名')
+  if (!form.db_name) missing.push('数据库名称')
+  if (missing.length > 0) {
+    ElMessage.warning('请填写：' + missing.join('、'))
+    return
+  }
+  step.value = 1
 }
 
-function submit() {
-  formRef.value?.validate(valid => {
-    if (!valid) return
+async function submit() {
+  if (!formRef.value) return
+  try {
+    await formRef.value.validate()
     if (form.admin_password !== form.confirm_admin_password) {
       ElMessage.warning('两次密码不一致')
       return
@@ -203,7 +212,9 @@ function submit() {
       submitting.value = false
       step.value = 1
     })
-  })
+  } catch (e) {
+    // validation failed
+  }
 }
 </script>
 
