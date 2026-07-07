@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 
 	macaron "gopkg.in/macaron.v1"
 
@@ -38,7 +39,33 @@ func (f InstallForm) Error(ctx *macaron.Context, errs binding.Errors) {
 		return
 	}
 	json := utils.JsonResponse{}
-	content := json.CommonFailure("表单验证失败, 请检测输入")
+
+	// 构建具体字段错误信息
+	fieldNames := map[string]string{
+		"DbType":               "数据库类型",
+		"DbHost":               "主机地址",
+		"DbPort":               "端口",
+		"DbUsername":           "数据库用户名",
+		"DbPassword":           "数据库密码",
+		"DbName":               "数据库名称",
+		"DbTablePrefix":        "表前缀",
+		"AdminUsername":        "管理员账号",
+		"AdminPassword":        "管理员密码",
+		"ConfirmAdminPassword": "确认密码",
+		"AdminEmail":           "管理员邮箱",
+	}
+
+	msgs := make([]string, 0, len(errs))
+	for _, err := range errs {
+		fieldName := fieldNames[err.FieldNames[0]]
+		if fieldName == "" {
+			fieldName = err.FieldNames[0]
+		}
+		msg := fieldName + ": " + err.Message
+		msgs = append(msgs, msg)
+	}
+
+	content := json.CommonFailure("表单验证失败: " + strings.Join(msgs, "; "))
 	ctx.Write([]byte(content))
 }
 
