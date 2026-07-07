@@ -4,7 +4,8 @@
       <div class="header-left">
         <router-link to="/dashboard" class="logo-link"><span class="logo">⚡ gocron</span></router-link>
         <nav class="nav-links">
-          <router-link to="/dashboard" class="nav-link" :class="{active: $route.path.startsWith('/dashboard') || $route.path.startsWith('/task')}">任务管理</router-link>
+          <router-link to="/dashboard" class="nav-link" :class="{active: $route.path.startsWith('/dashboard') || ($route.path.startsWith('/task') && !$route.path.startsWith('/task/log'))}">任务管理</router-link>
+          <router-link to="/task/log" class="nav-link" :class="{active: $route.path.startsWith('/task/log')}">任务日志</router-link>
           <router-link to="/host" class="nav-link" :class="{active: $route.path.startsWith('/host')}">任务节点</router-link>
           <router-link v-if="userStore.isAdmin" to="/user" class="nav-link" :class="{active: $route.path.startsWith('/user') && !$route.path.includes('/login')}">用户管理</router-link>
           <router-link v-if="userStore.isAdmin" to="/system/notification/email" class="nav-link" :class="{active: $route.path.startsWith('/system')}">系统管理</router-link>
