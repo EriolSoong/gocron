@@ -43,18 +43,18 @@
             <span v-else class="next-run stopped">已停止</span>
           </template>
         </el-table-column>
-        <el-table-column label="方式" width="100" align="center">
+        <el-table-column label="方式" width="100">
           <template #default="{row}">
             <span class="protocol-badge" :class="row.protocol===2?'shell':'http'">{{ row.protocol===2?'Shell':'HTTP' }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="90" align="center">
+        <el-table-column label="状态" width="90">
           <template #default="{row}">
             <span class="status-dot" :class="row.status===1?'active':'stopped'" />
             <span class="status-text">{{ row.status===1?'运行中':'已停止' }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="230" fixed="right" class-name="action-col">
+        <el-table-column label="操作" min-width="230" fixed="right" class-name="action-col" header-align="center">
           <template #default="{row}">
             <span class="hide-mobile">
               <el-button size="small" type="success" @click="runTask(row)">执行</el-button>
@@ -153,13 +153,20 @@ function removeTask(row) { taskService.remove(row.id, () => loadTasks()) }
   font-weight: 700;
   color: var(--color-text-primary);
   letter-spacing: 0.3px;
-  text-align: center;
 }
+
 
 /* 单元格 */
 :deep(.task-table td.el-table__cell) {
   border-bottom: 1px solid #f5f5f5;
   padding: 16px 0;
+}
+
+/* 方式、状态、操作列 — 内容居中，表头靠左 */
+:deep(.task-table .el-table__body-wrapper td.el-table__cell:nth-child(4)),
+:deep(.task-table .el-table__body-wrapper td.el-table__cell:nth-child(5)),
+:deep(.task-table .el-table__body-wrapper td.el-table__cell:nth-child(6)) {
+  text-align: center;
 }
 
 /* 展开行 */
