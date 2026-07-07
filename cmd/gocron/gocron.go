@@ -6,6 +6,7 @@ package main
 import (
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 
 	macaron "gopkg.in/macaron.v1"
@@ -14,6 +15,7 @@ import (
 	"github.com/ouqiang/gocron/internal/modules/app"
 	"github.com/ouqiang/gocron/internal/modules/logger"
 	"github.com/ouqiang/gocron/internal/modules/setting"
+	"github.com/ouqiang/gocron/internal/modules/utils"
 	"github.com/ouqiang/gocron/internal/routers"
 	"github.com/ouqiang/gocron/internal/service"
 	"github.com/ouqiang/goutil"
@@ -90,6 +92,14 @@ func runWeb(ctx *cli.Context) {
 
 func initModule() {
 	if !app.Installed {
+		return
+	}
+
+	// 配置文件不存在时退回到未安装状态（例如 conf 目录被清空）
+	if !utils.FileExist(app.AppConfig) {
+		logger.Warn("配置文件不存在，进入安装向导模式")
+		os.Remove(filepath.Join(app.ConfDir, "install.lock"))
+		app.Installed = false
 		return
 	}
 
