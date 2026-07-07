@@ -22,13 +22,7 @@
       <el-table :data="tasks" v-loading="loading" style="width:100%">
         <el-table-column type="expand">
           <template #default="{row}">
-            <el-descriptions :column="2" size="small" border>
-              <el-descriptions-item label="创建时间">{{ fmt(row.created) }}</el-descriptions-item>
-              <el-descriptions-item label="类型">{{ row.level===1?'主任务':'子任务' }}</el-descriptions-item>
-              <el-descriptions-item label="超时">{{ row.timeout>0?row.timeout+'秒':'不限制' }}</el-descriptions-item>
-              <el-descriptions-item label="重试">{{ row.retry_times }}次</el-descriptions-item>
-              <el-descriptions-item v-if="row.remark" label="备注" :span="2">{{ row.remark }}</el-descriptions-item>
-            </el-descriptions>
+            <TaskDetail :row="row" />
           </template>
         </el-table-column>
         <el-table-column prop="name" label="名称" min-width="140" />
@@ -61,6 +55,7 @@ import { Search, Refresh, Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import StatCard from '@/components/StatCard.vue'
+import TaskDetail from '@/components/TaskDetail.vue'
 import taskService from '@/api/task'
 
 const userStore = useUserStore()
@@ -84,12 +79,6 @@ function loadTasks() {
 }
 function runTask(row) { taskService.run(row.id, () => ElMessage.success('任务已开始执行')) }
 function removeTask(row) { taskService.remove(row.id, () => loadTasks()) }
-function fmt(t) {
-  if (!t) return ''
-  const d = new Date(t)
-  const pad = n => n>=10?n:'0'+n
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
-}
 </script>
 <style scoped>
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px; }
