@@ -99,6 +99,7 @@ import { ref, reactive, watch, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import taskService from '@/api/task'
+import hostService from '@/api/host'
 import parser from 'cron-parser'
 
 const router = useRouter(); const route = useRoute()
@@ -136,10 +137,14 @@ watch(() => form.spec, val => {
 })
 
 onMounted(() => {
+  // 加载所有主机列表（用于下拉选择）
+  hostService.all(data => {
+    hosts.value = Array.isArray(data) ? data : []
+  })
+
   const id = route.params.id
   if (id) {
-    taskService.detail(id, (taskData, hostsData) => {
-      hosts.value = hostsData || []
+    taskService.detail(id, (taskData, taskHosts) => {
       if (taskData) {
         Object.assign(form, {
           ...taskData,
@@ -147,6 +152,10 @@ onMounted(() => {
           notify_status: taskData.notify_status + 1,
           notify_type: (taskData.notify_type || 0) + 1
         })
+        // 回填已选择的主机
+        if (taskHosts && taskHosts.length) {
+          selectedHosts.value = taskHosts.map(h => h.host_id)
+        }
         if (taskData.request_params) jsonText.value = taskData.request_params
       }
     })

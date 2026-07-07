@@ -1,7 +1,7 @@
 import request from '@/utils/httpClient'
 export default {
   list(params, cb) { request.get('/api/user', { params }).then(r => cb(r)) },
-  detail(id, cb) { request.get(`/api/user/${id}`).then(r => cb(r.data)) },
+  detail(id, cb) { request.get(`/api/user/${id}`).then(r => cb(r)) },
   update(form, cb) { request.post('/api/user/store', form).then(() => cb && cb()) },
   remove(id, cb) { request.post(`/api/user/remove/${id}`).then(() => cb && cb()) },
   login(username, password, cb) { request.post('/api/user/login', { username, password }).then(r => cb(r)) },
