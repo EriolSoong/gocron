@@ -30,7 +30,12 @@
         <el-table-column label="标签" width="100">
           <template #default="{row}"><el-tag v-if="row.tag" size="small" effect="plain" color="#e0e7ff" style="color:#4f46e5;border:none">{{ row.tag }}</el-tag></template>
         </el-table-column>
-        <el-table-column prop="spec" label="cron" width="110" />
+        <el-table-column label="下次执行" width="160">
+          <template #default="{row}">
+            <span v-if="row.status===1" style="font-size:13px;color:var(--color-text-primary)">{{ nextRun(row.spec) }}</span>
+            <span v-else style="font-size:13px;color:var(--color-text-muted)">已停止</span>
+          </template>
+        </el-table-column>
         <el-table-column label="方式" width="80"><template #default="{row}">{{ row.protocol===2?'shell':'http' }}</template></el-table-column>
         <el-table-column label="状态" width="100">
           <template #default="{row}"><el-tag size="small" :type="row.status===1?'success':'danger'" effect="dark">{{ row.status===1?'运行中':'已停止' }}</el-tag></template>
@@ -72,6 +77,7 @@ import { useUserStore } from '@/stores/user'
 import StatCard from '@/components/StatCard.vue'
 import TaskDetail from '@/components/TaskDetail.vue'
 import taskService from '@/api/task'
+import parser from 'cron-parser'
 
 const userStore = useUserStore()
 const tasks = ref([])
@@ -81,6 +87,18 @@ const page = ref(1)
 const pageSize = ref(20)
 const search = reactive({ name: '', protocol: '', status: '' })
 const stats = reactive({ total_tasks: 0, active_tasks: 0, failed_last_24h: 0, online_hosts: 0 })
+
+function nextRun(spec) {
+  if (!spec) return '-'
+  try {
+    const interval = parser.parseExpression(spec)
+    const d = interval.next().toDate()
+    const pad = n => String(n).padStart(2, '0')
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+  } catch {
+    return spec
+  }
+}
 
 onMounted(() => { loadStats(); loadTasks() })
 
