@@ -43,7 +43,7 @@
             <span v-else class="next-run stopped">已停止</span>
           </template>
         </el-table-column>
-        <el-table-column label="方式" width="75" align="center">
+        <el-table-column label="方式" width="100" align="center">
           <template #default="{row}">
             <span class="protocol-badge" :class="row.protocol===2?'shell':'http'">{{ row.protocol===2?'Shell':'HTTP' }}</span>
           </template>
@@ -57,7 +57,7 @@
         <el-table-column label="操作" min-width="230" fixed="right" class-name="action-col">
           <template #default="{row}">
             <span class="hide-mobile">
-              <el-button text size="small" type="primary" @click="runTask(row)">执行</el-button>
+              <el-button size="small" type="success" @click="runTask(row)">执行</el-button>
               <el-button text size="small" type="primary" @click="$router.push('/task/edit/'+row.id)">编辑</el-button>
               <el-button text size="small" type="primary" @click="$router.push('/task/log?task_id='+row.id)">日志</el-button>
               <el-popconfirm title="确定删除?" @confirm="removeTask(row)"><template #reference><el-button text size="small" type="danger">删除</el-button></template></el-popconfirm>
@@ -149,11 +149,11 @@ function removeTask(row) { taskService.remove(row.id, () => loadTasks()) }
   background: transparent;
   border-bottom: 2px solid var(--color-border);
   padding: 14px 0 10px 0;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: 0.3px;
+  text-align: center;
 }
 
 /* 单元格 */
