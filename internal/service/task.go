@@ -223,13 +223,17 @@ func (h *HTTPHandler) Run(taskModel models.Task, taskUniqueId int64) (result str
 	if taskModel.HttpMethod == models.TaskHTTPMethodGet {
 		resp = httpclient.Get(taskModel.Command, taskModel.Timeout)
 	} else {
-		urlFields := strings.Split(taskModel.Command, "?")
-		taskModel.Command = urlFields[0]
-		var params string
-		if len(urlFields) >= 2 {
-			params = urlFields[1]
+		// POST 请求：优先使用 request_params JSON，否则提取 URL 中的 query string
+		if strings.TrimSpace(taskModel.RequestParams) != "" {
+			resp = httpclient.PostJson(taskModel.Command, taskModel.RequestParams, taskModel.Timeout)
+		} else {
+			urlFields := strings.Split(taskModel.Command, "?")
+			var params string
+			if len(urlFields) >= 2 {
+				params = urlFields[1]
+			}
+			resp = httpclient.PostParams(taskModel.Command, params, taskModel.Timeout)
 		}
-		resp = httpclient.PostParams(taskModel.Command, params, taskModel.Timeout)
 	}
 	// 返回状态码非200，均为失败
 	if resp.StatusCode != http.StatusOK {

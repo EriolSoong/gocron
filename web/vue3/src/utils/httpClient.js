@@ -34,11 +34,15 @@ request.interceptors.response.use(
       return body
     }
     ElMessage.error(body.message || '请求失败')
+    // 认证失败时跳转登录
+    if (body.code === 1 && /认证|登录|token|auth/i.test(body.message || '')) {
+      window.location.href = '/#/user/login'
+    }
     return Promise.reject(body)
   },
   error => {
     if (error.response && error.response.status === 401) {
-      window.location.href = '/user/login'
+      window.location.href = '/#/user/login'
       return Promise.reject(error)
     }
     ElMessage.error(error.message || '网络错误')
