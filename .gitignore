@@ -40,3 +40,4 @@ profile/*
 node_modules
 web/vue3/dist
 .superpowers
+.claude
