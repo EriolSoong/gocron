@@ -17,14 +17,19 @@ const nextRun = ref('')
 const nextRuns = ref([])
 const error = ref('')
 
+function fmtDate(d) {
+  const pad = n => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
+}
+
 function updatePreview(expr) {
   error.value = ''; nextRun.value = ''; nextRuns.value = []
   if (!expr || !expr.trim()) return
   try {
     const interval = parser.parseExpression(expr.trim())
-    nextRun.value = interval.next().toISOString().replace('T', ' ').slice(0, 19)
+    nextRun.value = fmtDate(interval.next().toDate())
     const runs = []
-    for (let i = 0; i < 5; i++) runs.push(interval.next().toISOString().replace('T', ' ').slice(0, 19))
+    for (let i = 0; i < 5; i++) runs.push(fmtDate(interval.next().toDate()))
     nextRuns.value = runs
   } catch (e) { error.value = e.message }
 }

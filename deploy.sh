@@ -24,8 +24,8 @@ echo " 日志: ${LOG_DIR}"
 echo "========================================"
 
 # 1. 构建 Linux 静态二进制
-echo "" && echo "[1/4] 构建 Linux 静态二进制..."
-make build-linux
+# echo "" && echo "[1/4] 构建 Linux 静态二进制..."
+# make build-linux
 
 # 2. 构建 Docker 镜像
 echo "" && echo "[2/4] 构建 Docker 镜像..."

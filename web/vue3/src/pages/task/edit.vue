@@ -129,7 +129,9 @@ watch(() => form.spec, val => {
   if (!val || !val.trim()) return
   try {
     const interval = parser.parseExpression(val.trim())
-    cronPreview.value = interval.next().toISOString().replace('T', ' ').slice(0, 19)
+    const d = interval.next().toDate()
+    const pad = n => String(n).padStart(2, '0')
+    cronPreview.value = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
   } catch (e) { cronError.value = e.message }
 })
 
