@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -209,6 +210,26 @@ type Handler interface {
 	Run(taskModel models.Task, taskUniqueId int64) (string, error)
 }
 
+// 将 JSON 请求参数拼接到 URL query string
+func appendQueryParams(url, requestParams string) string {
+	params := make(map[string]interface{})
+	if err := json.Unmarshal([]byte(requestParams), &params); err != nil {
+		return url
+	}
+	if len(params) == 0 {
+		return url
+	}
+	sep := "?"
+	if strings.Contains(url, "?") {
+		sep = "&"
+	}
+	for k, v := range params {
+		url += fmt.Sprintf("%s%s=%v", sep, k, v)
+		sep = "&"
+	}
+	return url
+}
+
 // HTTP任务
 type HTTPHandler struct{}
 
@@ -221,7 +242,11 @@ func (h *HTTPHandler) Run(taskModel models.Task, taskUniqueId int64) (result str
 	}
 	var resp httpclient.ResponseWrapper
 	if taskModel.HttpMethod == models.TaskHTTPMethodGet {
-		resp = httpclient.Get(taskModel.Command, taskModel.Timeout)
+		url := taskModel.Command
+		if strings.TrimSpace(taskModel.RequestParams) != "" {
+			url = appendQueryParams(url, taskModel.RequestParams)
+		}
+		resp = httpclient.Get(url, taskModel.Timeout)
 	} else {
 		// POST 请求：优先使用 request_params JSON，否则提取 URL 中的 query string
 		if strings.TrimSpace(taskModel.RequestParams) != "" {
