@@ -48,7 +48,30 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+let installChecked = false
+let isInstalled = true
+
+router.beforeEach(async (to, from, next) => {
+  // 安装检测必须在所有路由之前
+  if (!installChecked && to.path !== '/install') {
+    try {
+      const resp = await fetch('/api/install/status')
+      const json = await resp.json()
+      isInstalled = json.data !== false
+      installChecked = true
+      if (!isInstalled) {
+        next({ path: '/install', replace: true })
+        return
+      }
+    } catch (e) {
+      installChecked = true
+    }
+  }
+
+  if (to.path === '/install') {
+    next(); return
+  }
+
   if (to.meta.noLogin) { next(); return }
   const store = useUserStore()
   if (store.isLoggedIn) { next(); return }
