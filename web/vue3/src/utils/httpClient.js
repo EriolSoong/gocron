@@ -20,13 +20,17 @@ request.interceptors.request.use(config => {
 
 request.interceptors.response.use(
   response => {
-    const data = response.data
+    const body = response.data
     // gocron API: code===0 表示成功, code===1 表示失败
-    if (data.code === 0 || data.message === '' || data.code === undefined) {
-      return data
+    if (body.code === 0 || body.message === '' || body.code === undefined) {
+      // 解包 {code, message, data} 顶层，只返回实际 payload
+      if (body && typeof body === 'object' && 'data' in body) {
+        return body.data
+      }
+      return body
     }
-    ElMessage.error(data.message || '请求失败')
-    return Promise.reject(data)
+    ElMessage.error(body.message || '请求失败')
+    return Promise.reject(body)
   },
   error => {
     if (error.response && error.response.status === 401) {
