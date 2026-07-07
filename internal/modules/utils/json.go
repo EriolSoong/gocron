@@ -47,6 +47,7 @@ func (j *JsonResponse) Failure(code int, message string) string {
 func (j *JsonResponse) CommonFailure(message string, err ...error) string {
 	if len(err) > 0 {
 		logger.Warn(err)
+		return j.Failure(ResponseFailure, message + ": " + err[0].Error())
 	}
 	return j.Failure(ResponseFailure, message)
 }
