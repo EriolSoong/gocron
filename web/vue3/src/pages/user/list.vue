@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page-container">
     <div class="page-card">
       <div class="toolbar"><h2>用户管理</h2><el-button type="primary" @click="$router.push('/user/create')"><el-icon><Plus /></el-icon> 新增</el-button></div>
       <el-table :data="users" v-loading="loading" style="width:100%">
@@ -41,8 +41,7 @@ function toggleStatus(row) { row.status ? userService.enable(row.id) : userServi
 function removeUser(row) { userService.remove(row.id, () => loadUsers()) }
 </script>
 <style scoped>
-.page { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
-.page-card { background: var(--color-surface); border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-card); }
+.page-card { padding: 24px; }
 .toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .pagination { display: flex; justify-content: flex-end; margin-top: 16px; }
 </style>

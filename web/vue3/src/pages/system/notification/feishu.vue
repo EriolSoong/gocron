@@ -45,7 +45,7 @@ function addGroup() { if (!newName.value) { ElMessage.warning('请输入名称')
 function removeGroup(g) { notifService.removeFeishuGroup(g.id, () => load()) }
 </script>
 <style scoped>
-.notif-page { padding: 28px 32px; max-width: 900px; margin: 0 auto; }
+.notif-page { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
 .notif-card { background: var(--color-surface); border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-card); }
 .section-title { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
 </style>

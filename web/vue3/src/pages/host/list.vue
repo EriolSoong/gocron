@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page-container">
     <div class="page-card">
       <h2 style="margin-bottom:16px">任务节点</h2>
       <div class="toolbar">
@@ -52,8 +52,6 @@ function testConn(row) { hostService.ping(row.id, () => ElMessage.success('连�
 function removeHost(row) { hostService.remove(row.id, () => loadHosts()) }
 </script>
 <style scoped>
-.page { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
-.page-card { background: var(--color-surface); border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-card); }
-.toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
 .pagination { display: flex; justify-content: flex-end; margin-top: 16px; }
 </style>

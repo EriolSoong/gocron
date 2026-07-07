@@ -1,5 +1,5 @@
 <template>
-  <div class="page"><div class="page-card">
+  <div class="page-container"><div class="page-card">
     <h2 style="margin-bottom:16px">任务日志</h2>
     <div class="toolbar">
       <el-form :inline="true">
@@ -58,9 +58,7 @@ function stopTask(row) { taskLogService.stop(row.id, row.task_id, () => loadLogs
 function showResult(row) { currentResult.command = row.command; currentResult.result = row.result; dialogVisible.value = true }
 </script>
 <style scoped>
-.page { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
-.page-card { background: var(--color-surface); border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-card); }
-.toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
 .pagination { display: flex; justify-content: flex-end; margin-top: 16px; }
 pre { background: #1e1e2e; color: #cdd6f4; padding: 12px; border-radius: 6px; font-size: 12px; white-space: pre-wrap; word-wrap: break-word; max-height: 300px; overflow: auto; margin-bottom: 12px; }
 </style>

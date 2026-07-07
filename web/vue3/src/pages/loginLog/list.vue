@@ -1,5 +1,5 @@
 <template>
-  <div class="page"><div class="page-card">
+  <div class="page-container"><div class="page-card">
     <h2 style="margin-bottom:16px">登录日志</h2>
     <el-table :data="logs" v-loading="loading" style="width:100%">
       <el-table-column prop="id" label="ID" width="60" />
@@ -29,7 +29,5 @@ function fmt(t) {
 }
 </script>
 <style scoped>
-.page { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
-.page-card { background: var(--color-surface); border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-card); }
 .pagination { display: flex; justify-content: flex-end; margin-top: 16px; }
 </style>

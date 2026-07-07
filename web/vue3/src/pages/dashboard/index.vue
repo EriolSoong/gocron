@@ -1,12 +1,12 @@
 <template>
-  <div class="dashboard">
+  <div class="page-container">
     <div class="stats-row">
       <StatCard icon="📋" label="总任务数" :value="stats.total_tasks" color="primary" />
       <StatCard icon="✅" label="运行中" :value="stats.active_tasks" color="success" />
       <StatCard icon="❌" label="失败(24h)" :value="stats.failed_last_24h" color="danger" />
       <StatCard icon="🖥" label="在线节点" :value="stats.online_hosts" color="info" />
     </div>
-    <div class="task-card">
+    <div class="page-card task-card">
       <div class="toolbar">
         <div class="search-bar">
           <el-input v-model="search.name" placeholder="搜索任务名称、标签..." clearable :prefix-icon="Search" @keyup.enter="search" style="width:260px" />
@@ -92,12 +92,23 @@ function fmt(t) {
 }
 </script>
 <style scoped>
-.dashboard { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px; }
-.task-card { background: var(--color-surface); border-radius: var(--radius-card); padding: 20px; box-shadow: var(--shadow-card); }
+.task-card { /* page-card provides background/padding/shadow */ }
 .toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
 .search-bar { display: flex; align-items: center; gap: 8px; flex: 1; }
 .actions { display: flex; gap: 8px; }
 .pagination { display: flex; justify-content: flex-end; margin-top: 16px; }
 :deep(.action-col .cell) { white-space: nowrap; }
+
+@media (max-width: 1023px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 767px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .toolbar { flex-direction: column; }
+  .search-bar { flex-wrap: wrap; }
+  .search-bar .el-input,
+  .search-bar .el-select { width: 100% !important; flex: 1; min-width: 0; }
+}
 </style>

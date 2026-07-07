@@ -1,6 +1,6 @@
 <template>
-  <div class="edit-page">
-    <div class="edit-card">
+  <div class="page-form">
+    <div class="page-card">
       <h2 class="page-title">{{ $route.params.id ? '编辑任务' : '创建任务' }}</h2>
       <el-form ref="formRef" :model="form" :rules="rules" label-position="top">
         <!-- 基本信息 -->
@@ -179,8 +179,7 @@ function formatJson() {
 </script>
 
 <style scoped>
-.edit-page { padding: 28px 32px; max-width: 960px; margin: 0 auto; }
-.edit-card { background: var(--color-surface); border-radius: var(--radius-card); padding: 28px 32px; box-shadow: var(--shadow-card); }
+.page-card { padding: 28px 32px; }
 .page-title { font-size: 20px; font-weight: 700; margin-bottom: 24px; }
 .form-section { margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid var(--color-border); }
 .form-section:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }

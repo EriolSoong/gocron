@@ -27,7 +27,7 @@ onMounted(() => notifService.webhook(data => { if (data) Object.assign(form, dat
 function submit() { formRef.value?.validate(v => { if (!v) return; notifService.updateWebHook({ ...form }, () => ElMessage.success('保存成功')) }) }
 </script>
 <style scoped>
-.notif-page { padding: 28px 32px; max-width: 900px; margin: 0 auto; }
+.notif-page { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
 .notif-card { background: var(--color-surface); border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-card); }
 .section-title { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
 </style>

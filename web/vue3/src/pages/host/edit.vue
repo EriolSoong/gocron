@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page-form">
     <div class="page-card" style="max-width:600px">
       <h2 style="margin-bottom:20px">{{ isEdit ? '编辑节点' : '新增节点' }}</h2>
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
@@ -39,6 +39,5 @@ function submit() {
 }
 </script>
 <style scoped>
-.page { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
-.page-card { background: var(--color-surface); border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-card); }
+/* page-form 和 page-card 由 global.css 提供 */
 </style>

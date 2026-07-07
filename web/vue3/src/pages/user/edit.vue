@@ -1,5 +1,5 @@
 <template>
-  <div class="page"><div class="page-card" style="max-width:600px">
+  <div class="page-form"><div class="page-card" style="max-width:600px">
     <h2 style="margin-bottom:20px">{{ isEdit ? '编辑用户' : '新增用户' }}</h2>
     <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
       <el-form-item label="用户名" prop="name"><el-input v-model="form.name" /></el-form-item>
@@ -32,6 +32,5 @@ function submit() {
 }
 </script>
 <style scoped>
-.page { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
-.page-card { background: var(--color-surface); border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-card); }
+/* page-form 和 page-card 由 global.css 提供 */
 </style>
