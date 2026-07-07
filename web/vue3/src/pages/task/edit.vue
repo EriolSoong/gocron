@@ -6,13 +6,13 @@
         <!-- 基本信息 -->
         <div class="form-section"><div class="section-label">基本信息</div>
           <el-row :gutter="24">
-            <el-col :span="12"><el-form-item label="任务名称" prop="name"><el-input v-model="form.name" /></el-form-item></el-col>
-            <el-col :span="12"><el-form-item label="标签"><el-input v-model="form.tag" placeholder="通过标签将任务分组" /></el-form-item></el-col>
+            <el-col :xs="24" :sm="12"><el-form-item label="任务名称" prop="name"><el-input v-model="form.name" /></el-form-item></el-col>
+            <el-col :xs="24" :sm="12"><el-form-item label="标签"><el-input v-model="form.tag" placeholder="通过标签将任务分组" /></el-form-item></el-col>
           </el-row>
           <el-row :gutter="24">
-            <el-col :span="8"><el-form-item label="任务类型"><el-select v-model="form.level" :disabled="!!form.id" style="width:100%"><el-option :value="1" label="主任务" /><el-option :value="2" label="子任务" /></el-select></el-form-item></el-col>
-            <el-col v-if="form.level===1" :span="8"><el-form-item label="依赖关系"><el-select v-model="form.dependency_status" style="width:100%"><el-option :value="1" label="强依赖" /><el-option :value="2" label="弱依赖" /></el-select></el-form-item></el-col>
-            <el-col v-if="form.level===1" :span="8"><el-form-item label="子任务ID"><el-input v-model="form.dependency_task_id" placeholder="多个ID逗号分隔" /></el-form-item></el-col>
+            <el-col :xs="24" :sm="8"><el-form-item label="任务类型"><el-select v-model="form.level" :disabled="!!form.id" style="width:100%"><el-option :value="1" label="主任务" /><el-option :value="2" label="子任务" /></el-select></el-form-item></el-col>
+            <el-col v-if="form.level===1" :xs="24" :sm="8"><el-form-item label="依赖关系"><el-select v-model="form.dependency_status" style="width:100%"><el-option :value="1" label="强依赖" /><el-option :value="2" label="弱依赖" /></el-select></el-form-item></el-col>
+            <el-col v-if="form.level===1" :xs="24" :sm="8"><el-form-item label="子任务ID"><el-input v-model="form.dependency_task_id" placeholder="多个ID逗号分隔" /></el-form-item></el-col>
           </el-row>
         </div>
         <!-- 调度配置 -->
@@ -30,9 +30,9 @@
         <!-- 执行配置 -->
         <div class="form-section"><div class="section-label">执行配置</div>
           <el-row :gutter="24">
-            <el-col :span="8"><el-form-item label="执行方式"><el-select v-model="form.protocol" style="width:100%"><el-option :value="1" label="HTTP" /><el-option :value="2" label="Shell" /></el-select></el-form-item></el-col>
-            <el-col v-if="form.protocol===1" :span="8"><el-form-item label="请求方法"><el-select v-model="form.http_method" style="width:100%"><el-option :value="1" label="GET" /><el-option :value="2" label="POST" /></el-select></el-form-item></el-col>
-            <el-col v-if="form.protocol===2" :span="16"><el-form-item label="任务节点"><el-select v-model="selectedHosts" multiple filterable style="width:100%"><el-option v-for="h in hosts" :key="h.id" :label="h.alias+' - '+h.name" :value="h.id" /></el-select></el-form-item></el-col>
+            <el-col :xs="24" :sm="8"><el-form-item label="执行方式"><el-select v-model="form.protocol" style="width:100%"><el-option :value="1" label="HTTP" /><el-option :value="2" label="Shell" /></el-select></el-form-item></el-col>
+            <el-col v-if="form.protocol===1" :xs="24" :sm="8"><el-form-item label="请求方法"><el-select v-model="form.http_method" style="width:100%"><el-option :value="1" label="GET" /><el-option :value="2" label="POST" /></el-select></el-form-item></el-col>
+            <el-col v-if="form.protocol===2" :xs="24" :sm="16"><el-form-item label="任务节点"><el-select v-model="selectedHosts" multiple filterable style="width:100%"><el-option v-for="h in hosts" :key="h.id" :label="h.alias+' - '+h.name" :value="h.id" /></el-select></el-form-item></el-col>
           </el-row>
           <el-form-item label="命令/URL" prop="command">
             <el-input v-model="form.command" :rows="form.protocol===1?2:5" type="textarea" :placeholder="form.protocol===1?'请输入URL地址':'请输入shell命令'" />
@@ -68,19 +68,19 @@
         <div class="form-section"><div class="section-label">高级配置</div>
           <el-alert title="任务执行超时强制结束, 取值0-86400(秒), 默认0不限制" type="info" :closable="false" show-icon style="margin-bottom:12px" />
           <el-row :gutter="24">
-            <el-col :span="12"><el-form-item label="超时时间(秒)" prop="timeout"><el-input v-model.number="form.timeout" /></el-form-item></el-col>
-            <el-col :span="12"><el-form-item label="单实例运行"><el-select v-model="form.multi" style="width:100%"><el-option label="是" :value="2" /><el-option label="否" :value="1" /></el-select></el-form-item></el-col>
+            <el-col :xs="24" :sm="12"><el-form-item label="超时时间(秒)" prop="timeout"><el-input v-model.number="form.timeout" /></el-form-item></el-col>
+            <el-col :xs="24" :sm="12"><el-form-item label="单实例运行"><el-select v-model="form.multi" style="width:100%"><el-option label="是" :value="2" /><el-option label="否" :value="1" /></el-select></el-form-item></el-col>
           </el-row>
           <el-row :gutter="24">
-            <el-col :span="12"><el-form-item label="失败重试次数"><el-input v-model.number="form.retry_times" placeholder="0-10" /></el-form-item></el-col>
-            <el-col :span="12"><el-form-item label="重试间隔(秒)"><el-input v-model.number="form.retry_interval" placeholder="0-3600" /></el-form-item></el-col>
+            <el-col :xs="24" :sm="12"><el-form-item label="失败重试次数"><el-input v-model.number="form.retry_times" placeholder="0-10" /></el-form-item></el-col>
+            <el-col :xs="24" :sm="12"><el-form-item label="重试间隔(秒)"><el-input v-model.number="form.retry_interval" placeholder="0-3600" /></el-form-item></el-col>
           </el-row>
         </div>
         <!-- 通知配置 -->
         <div class="form-section"><div class="section-label">通知配置</div>
           <el-row :gutter="24">
-            <el-col :span="8"><el-form-item label="通知状态"><el-select v-model="form.notify_status" style="width:100%"><el-option :value="1" label="不通知" /><el-option :value="2" label="失败通知" /><el-option :value="3" label="总是通知" /><el-option :value="4" label="关键字匹配" /></el-select></el-form-item></el-col>
-            <el-col v-if="form.notify_status>1" :span="8"><el-form-item label="通知类型"><el-select v-model="form.notify_type" style="width:100%"><el-option :value="2" label="邮件" /><el-option :value="3" label="飞书" /><el-option :value="4" label="企业微信" /><el-option :value="5" label="WebHook" /></el-select></el-form-item></el-col>
+            <el-col :xs="24" :sm="8"><el-form-item label="通知状态"><el-select v-model="form.notify_status" style="width:100%"><el-option :value="1" label="不通知" /><el-option :value="2" label="失败通知" /><el-option :value="3" label="总是通知" /><el-option :value="4" label="关键字匹配" /></el-select></el-form-item></el-col>
+            <el-col v-if="form.notify_status>1" :xs="24" :sm="8"><el-form-item label="通知类型"><el-select v-model="form.notify_type" style="width:100%"><el-option :value="2" label="邮件" /><el-option :value="3" label="飞书" /><el-option :value="4" label="企业微信" /><el-option :value="5" label="WebHook" /></el-select></el-form-item></el-col>
           </el-row>
           <el-form-item v-if="form.notify_status===4" label="关键字"><el-input v-model="form.notify_keyword" /></el-form-item>
           <el-form-item label="备注"><el-input v-model="form.remark" type="textarea" :rows="2" /></el-form-item>

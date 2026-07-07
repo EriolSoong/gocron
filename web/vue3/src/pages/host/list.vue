@@ -9,6 +9,7 @@
         </el-form>
         <div><el-button v-if="userStore.isAdmin" type="primary" @click="$router.push('/host/create')"><el-icon><Plus /></el-icon> 新增</el-button><el-button @click="loadHosts">刷新</el-button></div>
       </div>
+      <div class="table-responsive">
       <el-table :data="hosts" v-loading="loading" style="width:100%">
         <el-table-column prop="id" label="ID" width="60" />
         <el-table-column prop="alias" label="节点名称" width="150" />
@@ -17,13 +18,27 @@
         <el-table-column prop="remark" label="备注" />
         <el-table-column label="操作" width="240" fixed="right">
           <template #default="{row}">
+            <span class="hide-mobile">
             <el-button size="small" type="primary" @click="$router.push('/host/edit/'+row.id)">编辑</el-button>
             <el-button size="small" @click="testConn(row)">测试连接</el-button>
             <el-button size="small" @click="$router.push('/task?host_id='+row.id)">查看任务</el-button>
             <el-popconfirm title="确定删除?" @confirm="removeHost(row)"><template #reference><el-button size="small" type="danger">删除</el-button></template></el-popconfirm>
+            </span>
+            <el-dropdown class="show-mobile" trigger="click">
+              <el-button size="small">更多</el-button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item @click="$router.push('/host/edit/'+row.id)">编辑</el-dropdown-item>
+                  <el-dropdown-item @click="testConn(row)">测试连接</el-dropdown-item>
+                  <el-dropdown-item @click="$router.push('/task?host_id='+row.id)">查看任务</el-dropdown-item>
+                  <el-dropdown-item divided @click="removeHost(row)">删除</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
+      </div>
       <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="sizes,prev,pager,next,total" background @change="loadHosts" /></div>
     </div>
   </div>

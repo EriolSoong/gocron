@@ -2,6 +2,7 @@
   <div class="page-container">
     <div class="page-card">
       <div class="toolbar"><h2>用户管理</h2><el-button type="primary" @click="$router.push('/user/create')"><el-icon><Plus /></el-icon> 新增</el-button></div>
+      <div class="table-responsive">
       <el-table :data="users" v-loading="loading" style="width:100%">
         <el-table-column prop="id" label="ID" width="60" />
         <el-table-column prop="name" label="用户名" />
@@ -10,12 +11,25 @@
         <el-table-column label="状态" width="80"><template #default="{row}"><el-switch v-model="row.status" :active-value="1" :inactive-value="0" @change="toggleStatus(row)" /></template></el-table-column>
         <el-table-column label="操作" width="240">
           <template #default="{row}">
+            <span class="hide-mobile">
             <el-button size="small" type="primary" @click="$router.push('/user/edit/'+row.id)">编辑</el-button>
             <el-button size="small" @click="$router.push('/user/edit-password/'+row.id)">修改密码</el-button>
             <el-popconfirm title="确定删除?" @confirm="removeUser(row)"><template #reference><el-button size="small" type="danger">删除</el-button></template></el-popconfirm>
+            </span>
+            <el-dropdown class="show-mobile" trigger="click">
+              <el-button size="small">更多</el-button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item @click="$router.push('/user/edit/'+row.id)">编辑</el-dropdown-item>
+                  <el-dropdown-item @click="$router.push('/user/edit-password/'+row.id)">修改密码</el-dropdown-item>
+                  <el-dropdown-item divided @click="removeUser(row)">删除</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
+      </div>
       <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="prev,pager,next,total" background @change="loadUsers" /></div>
     </div>
   </div>

@@ -19,6 +19,7 @@
           <el-button @click="loadTasks" :icon="Refresh">刷新</el-button>
         </div>
       </div>
+      <div class="table-responsive">
       <el-table :data="tasks" v-loading="loading" style="width:100%">
         <el-table-column type="expand">
           <template #default="{row}">
@@ -36,13 +37,27 @@
         </el-table-column>
         <el-table-column label="操作" min-width="230" fixed="right" class-name="action-col">
           <template #default="{row}">
-            <el-button text size="small" type="primary" @click="runTask(row)">执行</el-button>
-            <el-button text size="small" type="primary" @click="$router.push('/task/edit/'+row.id)">编辑</el-button>
-            <el-button text size="small" type="primary" @click="$router.push('/task/log?task_id='+row.id)">日志</el-button>
-            <el-popconfirm title="确定删除?" @confirm="removeTask(row)"><template #reference><el-button text size="small" type="danger">删除</el-button></template></el-popconfirm>
+            <span class="hide-mobile">
+              <el-button text size="small" type="primary" @click="runTask(row)">执行</el-button>
+              <el-button text size="small" type="primary" @click="$router.push('/task/edit/'+row.id)">编辑</el-button>
+              <el-button text size="small" type="primary" @click="$router.push('/task/log?task_id='+row.id)">日志</el-button>
+              <el-popconfirm title="确定删除?" @confirm="removeTask(row)"><template #reference><el-button text size="small" type="danger">删除</el-button></template></el-popconfirm>
+            </span>
+            <el-dropdown class="show-mobile" trigger="click">
+              <el-button text size="small">更多 <el-icon><ArrowDown /></el-icon></el-button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item @click="runTask(row)">执行</el-dropdown-item>
+                  <el-dropdown-item @click="$router.push('/task/edit/'+row.id)">编辑</el-dropdown-item>
+                  <el-dropdown-item @click="$router.push('/task/log?task_id='+row.id)">日志</el-dropdown-item>
+                  <el-dropdown-item divided @click="removeTask(row)">删除</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
+      </div>
       <div class="pagination">
         <el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" :page-sizes="[20,50,100]" layout="sizes,prev,pager,next,total" background @change="loadTasks" />
       </div>
@@ -51,7 +66,7 @@
 </template>
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { Search, Refresh, Plus } from '@element-plus/icons-vue'
+import { Search, Refresh, Plus, ArrowDown } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import StatCard from '@/components/StatCard.vue'

@@ -1,12 +1,12 @@
 <template>
   <div class="page-container"><div class="page-card">
     <h2 style="margin-bottom:16px">登录日志</h2>
-    <el-table :data="logs" v-loading="loading" style="width:100%">
+    <div class="table-responsive"><el-table :data="logs" v-loading="loading" style="width:100%">
       <el-table-column prop="id" label="ID" width="60" />
       <el-table-column prop="username" label="用户名" />
       <el-table-column prop="ip" label="登录IP" />
       <el-table-column label="登录时间"><template #default="{row}">{{ fmt(row.created) }}</template></el-table-column>
-    </el-table>
+    </el-table></div>
     <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="prev,pager,next,total" background @change="loadLogs" /></div>
   </div></div>
 </template>

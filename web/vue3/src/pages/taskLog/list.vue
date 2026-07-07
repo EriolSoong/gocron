@@ -9,7 +9,7 @@
       </el-form>
       <div><el-button v-if="userStore.isAdmin" type="danger" @click="clearLog">清空日志</el-button><el-button @click="loadLogs">刷新</el-button></div>
     </div>
-    <el-table :data="logs" v-loading="loading" style="width:100%">
+    <div class="table-responsive"><el-table :data="logs" v-loading="loading" style="width:100%">
       <el-table-column type="expand">
         <template #default="{row}"><div style="padding:12px">重试: {{row.retry_times}}次 | cron: {{row.spec}} | 命令: {{row.command}}</div></template>
       </el-table-column>
@@ -26,7 +26,7 @@
           <el-button v-if="row.status===1&&row.protocol===2&&userStore.isAdmin" size="small" type="danger" @click="stopTask(row)">停止</el-button>
         </template>
       </el-table-column>
-    </el-table>
+    </el-table></div>
     <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="sizes,prev,pager,next,total" background @change="loadLogs" /></div>
     <el-dialog v-model="dialogVisible" title="执行结果"><h4>命令</h4><pre>{{ currentResult.command }}</pre><h4>输出</h4><pre>{{ currentResult.result }}</pre></el-dialog>
   </div></div>
