@@ -50,6 +50,7 @@ fi
 docker run -d \
     --name "${CONTAINER_NAME}" \
     --restart unless-stopped \
+    --user "$(id -u):$(id -g)" \
     -p "${HOST_PORT}:5920" \
     -v "${CONF_DIR}:/app/conf" \
     -v "${LOG_DIR}:/app/log" \
