@@ -180,9 +180,8 @@ function updatePort(t) {
 }
 
 function nextStep() {
-  formRef.value?.validateField(['db_type', 'db_host', 'db_port', 'db_username', 'db_password', 'db_name'], (err) => {
-    if (err) return
-    step.value = 1
+  formRef.value?.validateField(['db_type', 'db_host', 'db_port', 'db_username', 'db_password', 'db_name'], (valid) => {
+    if (valid) step.value = 1
   })
 }
 
