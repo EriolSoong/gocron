@@ -9,7 +9,7 @@
       </el-form>
       <div><el-button v-if="userStore.isAdmin" type="danger" @click="clearLog">清空日志</el-button><el-button @click="loadLogs">刷新</el-button></div>
     </div>
-    <div class="table-responsive"><el-table :data="logs" v-loading="loading" style="width:100%">
+    <div class="table-responsive"><el-table :data="logs" v-loading="loading" class="task-table" style="width:100%">
       <el-table-column type="expand">
         <template #default="{row}"><div style="padding:12px">重试: {{row.retry_times}}次 | cron: {{row.spec}} | 命令: {{row.command}}</div></template>
       </el-table-column>

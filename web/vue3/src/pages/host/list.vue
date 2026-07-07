@@ -10,7 +10,7 @@
         <div><el-button v-if="userStore.isAdmin" type="primary" @click="$router.push('/host/create')"><el-icon><Plus /></el-icon> 新增</el-button><el-button @click="loadHosts">刷新</el-button></div>
       </div>
       <div class="table-responsive">
-      <el-table :data="hosts" v-loading="loading" style="width:100%">
+      <el-table :data="hosts" v-loading="loading" class="task-table" style="width:100%">
         <el-table-column prop="id" label="ID" width="60" />
         <el-table-column prop="alias" label="节点名称" width="150" />
         <el-table-column prop="name" label="主机名" width="180" />

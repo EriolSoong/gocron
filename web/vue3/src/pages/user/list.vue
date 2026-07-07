@@ -3,7 +3,7 @@
     <div class="page-card">
       <div class="toolbar"><h2>用户管理</h2><el-button type="primary" @click="$router.push('/user/create')"><el-icon><Plus /></el-icon> 新增</el-button></div>
       <div class="table-responsive">
-      <el-table :data="users" v-loading="loading" style="width:100%">
+      <el-table :data="users" v-loading="loading" class="task-table" style="width:100%">
         <el-table-column prop="id" label="ID" width="60" />
         <el-table-column prop="name" label="用户名" />
         <el-table-column prop="email" label="邮箱" />

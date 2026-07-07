@@ -135,54 +135,9 @@ function removeTask(row) { taskService.remove(row.id, () => loadTasks()) }
 .actions { display: flex; gap: 8px; }
 .pagination { display: flex; justify-content: flex-end; margin-top: 20px; }
 
-/* ===== 表格美化 ===== */
-:deep(.task-table) {
-  border: none;
-  font-size: 14px;
-}
-
-/* 表头 */
-:deep(.task-table .el-table__header-wrapper) {
-  --el-table-header-bg-color: transparent;
-}
-:deep(.task-table th.el-table__cell) {
-  background: transparent;
-  border-bottom: 2px solid var(--color-border);
-  padding: 14px 0 10px 0;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  letter-spacing: 0.3px;
-}
-
-
-/* 单元格 */
-:deep(.task-table td.el-table__cell) {
-  border-bottom: 1px solid #f5f5f5;
-  padding: 16px 0;
-}
-
-/* 方式、状态、操作列 — 内容居中，表头靠左 */
-:deep(.task-table .el-table__body-wrapper td.el-table__cell:nth-child(4)),
-:deep(.task-table .el-table__body-wrapper td.el-table__cell:nth-child(5)),
+/* 操作列 — 内容居中 */
 :deep(.task-table .el-table__body-wrapper td.el-table__cell:nth-child(6)) {
   text-align: center;
-}
-
-/* 展开行 */
-:deep(.task-table .el-table__expanded-cell) {
-  padding: 0 16px 16px 50px !important;
-  background: #fafbfc;
-}
-
-/* 行 hover */
-:deep(.task-table .el-table__body tr:hover > td.el-table__cell) {
-  background: #fafbfc;
-}
-
-/* 去掉表格底部的伪元素分隔线 */
-:deep(.task-table .el-table__inner-wrapper::before) {
-  display: none;
 }
 
 /* ===== 名称列 ===== */
