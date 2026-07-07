@@ -34,9 +34,10 @@ request.interceptors.response.use(
       return body
     }
     ElMessage.error(body.message || '请求失败')
-    // 认证失败时跳转登录
-    if (body.code === 1 && /认证|登录|token|auth/i.test(body.message || '')) {
+    // 认证/授权失败时跳转登录
+    if (body.code === 401 || body.code === 403) {
       window.location.href = '/#/user/login'
+      return Promise.reject(body)
     }
     return Promise.reject(body)
   },
