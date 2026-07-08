@@ -7,7 +7,7 @@
       <el-table-column prop="ip" label="登录IP" />
       <el-table-column label="登录时间"><template #default="{row}">{{ fmt(row.created) }}</template></el-table-column>
     </el-table></div>
-    <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="prev,pager,next,total" background @change="loadLogs" /></div>
+    <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="prev,pager,next,total" size="small" @change="loadLogs" /></div>
   </div></div>
 </template>
 <script setup>

@@ -30,7 +30,7 @@
         </el-table-column>
       </el-table>
       </div>
-      <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="prev,pager,next,total" background @change="loadUsers" /></div>
+      <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="prev,pager,next,total" size="small" @change="loadUsers" /></div>
     </div>
   </div>
 </template>

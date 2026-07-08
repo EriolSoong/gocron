@@ -86,7 +86,7 @@
       </el-table>
       </div>
       <div class="pagination">
-        <el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" :page-sizes="[20,50,100]" layout="sizes,prev,pager,next,total" background @change="loadTasks" />
+        <el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" :page-sizes="[20,50,100]" layout="sizes,prev,pager,next,total" size="small" @change="loadTasks" />
       </div>
     </div>
     <TaskFormDialog v-model="dialogVisible" :task-id="editingTaskId" @saved="loadTasks" />

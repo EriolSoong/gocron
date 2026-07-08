@@ -61,7 +61,7 @@
       </el-table-column>
     </el-table>
     </div>
-    <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="sizes,prev,pager,next,total" background @change="loadLogs" /></div>
+    <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="sizes,prev,pager,next,total" size="small" @change="loadLogs" /></div>
     <el-dialog v-model="dialogVisible" title="执行结果" width="680px">
       <h4>命令</h4>
       <pre>{{ currentResult.command }}</pre>

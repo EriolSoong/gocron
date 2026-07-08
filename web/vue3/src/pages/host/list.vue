@@ -39,7 +39,7 @@
         </el-table-column>
       </el-table>
       </div>
-      <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="sizes,prev,pager,next,total" background @change="loadHosts" /></div>
+      <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="sizes,prev,pager,next,total" size="small" @change="loadHosts" /></div>
     </div>
   </div>
 </template>
