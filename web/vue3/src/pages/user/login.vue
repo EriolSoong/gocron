@@ -1,13 +1,13 @@
 <template>
   <div class="login-page">
     <div class="login-card">
-      <div class="login-header"><div class="login-logo">⚡</div><h1>gocron</h1><p>定时任务管理系统</p></div>
+      <div class="login-header"><div class="login-logo">⚡</div><h1>GoCronX</h1><p>定时任务管理系统</p></div>
       <el-form ref="formRef" :model="form" :rules="rules" @submit.prevent="submit">
         <el-form-item prop="username"><el-input v-model="form.username" placeholder="用户名或邮箱" :prefix-icon="User" size="large" /></el-form-item>
         <el-form-item prop="password"><el-input v-model="form.password" type="password" placeholder="密码" :prefix-icon="Lock" size="large" show-password /></el-form-item>
         <el-form-item><el-button type="primary" native-type="submit" size="large" :loading="loading" style="width:100%">登 录</el-button></el-form-item>
       </el-form>
-      <div class="footer">gocron v2.0</div>
+      <div class="footer">GoCronX v2.0</div>
     </div>
   </div>
 </template>

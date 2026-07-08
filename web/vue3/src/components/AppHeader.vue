@@ -2,7 +2,7 @@
   <header class="app-header">
     <div class="header-inner">
       <div class="header-left">
-        <router-link to="/dashboard" class="logo-link"><span class="logo">⚡ gocron</span></router-link>
+        <router-link to="/dashboard" class="logo-link"><span class="logo">⚡ GoCronX</span></router-link>
         <nav class="nav-links">
           <router-link to="/dashboard" class="nav-link" :class="{active: $route.path.startsWith('/dashboard') || ($route.path.startsWith('/task') && !$route.path.startsWith('/task/log'))}">任务管理</router-link>
           <router-link to="/task/log" class="nav-link" :class="{active: $route.path.startsWith('/task/log')}">任务日志</router-link>
@@ -31,7 +31,7 @@
       </div>
     </div>
     <el-drawer v-model="drawerVisible" direction="ltr" size="260px" :with-header="false">
-      <div class="drawer-logo"><span>⚡ gocron</span></div>
+      <div class="drawer-logo"><span>⚡ GoCronX</span></div>
       <nav class="drawer-nav">
         <router-link to="/dashboard" class="drawer-link" :class="{active: $route.path.startsWith('/dashboard') || ($route.path.startsWith('/task') && !$route.path.startsWith('/task/log'))}" @click="drawerVisible = false">📋 任务管理</router-link>
         <router-link to="/task/log" class="drawer-link" :class="{active: $route.path.startsWith('/task/log')}" @click="drawerVisible = false">📄 任务日志</router-link>

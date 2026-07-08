@@ -1,5 +1,5 @@
 <template>
-  <div id="gocron-app">
+  <div id="gocronx-app">
     <AppHeader v-if="!$route.meta?.noLogin" />
     <main class="main-content"><router-view /></main>
   </div>
