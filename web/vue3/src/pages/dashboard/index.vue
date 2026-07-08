@@ -62,7 +62,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="230" fixed="right" class-name="action-col" align="center" header-align="center">
+        <el-table-column label="操作" min-width="230" class-name="action-col" align="center" header-align="center">
           <template #default="{row}">
             <span class="hide-mobile">
               <el-button size="small" type="success" @click="runTask(row)">执行</el-button>
