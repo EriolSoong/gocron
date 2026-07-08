@@ -105,14 +105,14 @@ function sizeChanged(e) {
 }
 
 .pager-btn:hover:not(:disabled):not(.active) {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: var(--color-primary-light);
+  border-color: var(--el-color-primary);
+  color: var(--el-color-primary);
+  background: var(--el-color-primary-light-9);
 }
 
 .pager-btn.active {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
+  background: var(--el-color-primary);
+  border-color: var(--el-color-primary);
   color: #fff;
   font-weight: 600;
   box-shadow: 0 2px 6px rgba(79,70,229,0.2);
