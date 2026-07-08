@@ -48,10 +48,18 @@
             <span class="protocol-badge" :class="row.protocol===2?'shell':'http'">{{ row.protocol===2?'Shell':'HTTP' }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="90">
+        <el-table-column label="状态" width="120">
           <template #default="{row}">
-            <span class="status-dot" :class="row.status===1?'active':'stopped'" />
-            <span class="status-text">{{ row.status===1?'运行中':'已停止' }}</span>
+            <el-switch
+              v-if="row.level === 1"
+              v-model="row.status"
+              :active-value="1"
+              :inactive-value="0"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :disabled="!userStore.isAdmin"
+              @change="toggleStatus(row)" />
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" min-width="230" fixed="right" class-name="action-col" align="center" header-align="center">
@@ -139,6 +147,15 @@ function loadTasks() {
   taskService.list(params, data => { tasks.value = data.data || []; total.value = data.total || 0; loading.value = false })
 }
 function runTask(row) { taskService.run(row.id, () => ElMessage.success('任务已开始执行')) }
+function toggleStatus(row) {
+  if (row.status) {
+    taskService.enable(row.id)
+    ElMessage.success('已激活')
+  } else {
+    taskService.disable(row.id)
+    ElMessage.success('已停止')
+  }
+}
 function removeTask(row) { taskService.remove(row.id, () => loadTasks()) }
 </script>
 <style scoped>
