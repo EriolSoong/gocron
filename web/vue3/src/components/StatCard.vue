@@ -11,7 +11,7 @@
 import { computed } from 'vue'
 const props = defineProps({ icon: String, label: String, value: [Number, String], color: { type: String, default: 'primary' } })
 defineEmits(['click'])
-const colorMap = { primary: { bg: '#e0e7ff', text: '#4f46e5' }, success: { bg: '#d1fae5', text: '#10b981' }, danger: { bg: '#fee2e2', text: '#ef4444' }, info: { bg: '#e0f2fe', text: '#0ea5e9' } }
+const colorMap = { primary: { bg: '#ecf5ff', text: '#409eff' }, success: { bg: '#d1fae5', text: '#10b981' }, danger: { bg: '#fee2e2', text: '#ef4444' }, info: { bg: '#e0f2fe', text: '#0ea5e9' } }
 const colors = computed(() => colorMap[props.color] || colorMap.primary)
 </script>
 <style scoped>

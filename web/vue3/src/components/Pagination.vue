@@ -105,17 +105,16 @@ function sizeChanged(e) {
 }
 
 .pager-btn:hover:not(:disabled):not(.active) {
-  border-color: var(--el-color-primary);
-  color: var(--el-color-primary);
-  background: var(--el-color-primary-light-9);
+  border-color: #409eff;
+  color: #409eff;
+  background: #ecf5ff;
 }
 
 .pager-btn.active {
-  background: var(--el-color-primary);
-  border-color: var(--el-color-primary);
+  background: #409eff;
+  border-color: #409eff;
   color: #fff;
   font-weight: 600;
-  box-shadow: 0 2px 6px rgba(79,70,229,0.2);
 }
 
 .pager-btn:disabled {
@@ -142,6 +141,6 @@ function sizeChanged(e) {
 }
 
 .pager-select:focus {
-  border-color: var(--color-primary);
+  border-color: #409eff;
 }
 </style>
