@@ -11,9 +11,9 @@ import (
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
 	_ "github.com/lib/pq"
-	"github.com/ouqiang/gocron/internal/modules/app"
-	"github.com/ouqiang/gocron/internal/modules/logger"
-	"github.com/ouqiang/gocron/internal/modules/setting"
+	"gocron/internal/modules/app"
+	"gocron/internal/modules/logger"
+	"gocron/internal/modules/setting"
 )
 
 type Status int8

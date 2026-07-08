@@ -12,13 +12,13 @@ import (
 	"github.com/ouqiang/goutil"
 
 	"github.com/jakecoffman/cron"
-	"github.com/ouqiang/gocron/internal/models"
-	"github.com/ouqiang/gocron/internal/modules/app"
-	"github.com/ouqiang/gocron/internal/modules/httpclient"
-	"github.com/ouqiang/gocron/internal/modules/logger"
-	"github.com/ouqiang/gocron/internal/modules/notify"
-	rpcClient "github.com/ouqiang/gocron/internal/modules/rpc/client"
-	pb "github.com/ouqiang/gocron/internal/modules/rpc/proto"
+	"gocron/internal/models"
+	"gocron/internal/modules/app"
+	"gocron/internal/modules/httpclient"
+	"gocron/internal/modules/logger"
+	"gocron/internal/modules/notify"
+	rpcClient "gocron/internal/modules/rpc/client"
+	pb "gocron/internal/modules/rpc/proto"
 )
 
 var (

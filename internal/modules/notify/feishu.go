@@ -11,8 +11,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ouqiang/gocron/internal/models"
-	"github.com/ouqiang/gocron/internal/modules/logger"
+	"gocron/internal/models"
+	"gocron/internal/modules/logger"
 )
 
 type Feishu struct{}

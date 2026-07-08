@@ -109,6 +109,21 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+/* 固定列强制不透明背景 — 移动端横向滚动时防止下层文字穿透 */
+.el-table .el-table__fixed-right,
+.el-table .el-table__fixed-right .el-table__fixed-body-wrapper,
+.el-table .el-table__fixed-right .el-table__fixed-header-wrapper {
+  background-color: #fff !important;
+}
+.el-table .el-table__fixed-right th.el-table__cell,
+.el-table .el-table__fixed-right td.el-table__cell {
+  background-color: #fff !important;
+}
+/* 固定列 header 底部加分隔线避免与 body 切割感 */
+.el-table .el-table__fixed-right .el-table__fixed-header-wrapper {
+  border-bottom: 1px solid #f0f0f0;
+}
+
 /* === 响应式：平板 (768px - 1023px) === */
 @media (max-width: 1023px) {
   .page-container,
