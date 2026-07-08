@@ -11,7 +11,7 @@
         <div class="search-bar">
           <el-input v-model="search.name" placeholder="搜索任务名称、标签..." clearable :prefix-icon="Search" @keyup.enter="search" style="width:260px" />
           <el-select v-model="search.protocol" placeholder="执行方式" clearable style="width:130px"><el-option label="全部" value="" /><el-option label="HTTP" value="1" /><el-option label="Shell" value="2" /></el-select>
-          <el-select v-model="search.status" placeholder="状态" clearable style="width:120px"><el-option label="全部" value="" /><el-option label="激活" value="1" /><el-option label="停止" value="0" /></el-select>
+          <el-select v-model="search.status" placeholder="状态" clearable style="width:120px"><el-option label="全部" value="" /><el-option label="激活" value="2" /><el-option label="停止" value="1" /></el-select>
           <el-button type="primary" :icon="Search" @click="loadTasks">搜索</el-button>
         </div>
         <div class="actions">
@@ -58,7 +58,7 @@
               active-color="#13ce66"
               inactive-color="#ff4949"
               :disabled="!userStore.isAdmin"
-              @change="toggleStatus(row)" />
+              @change="(val) => toggleStatus(row, val)" />
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -147,15 +147,14 @@ function loadTasks() {
   taskService.list(params, data => { tasks.value = data.data || []; total.value = data.total || 0; loading.value = false })
 }
 function runTask(row) { taskService.run(row.id, () => ElMessage.success('任务已开始执行')) }
-function toggleStatus(row) {
-  const newVal = row.status
-  const promise = newVal ? taskService.enable(row.id) : taskService.disable(row.id)
-  promise.catch(() => {
-    // API 失败，回滚开关到旧值
-    row.status = newVal ? 0 : 1
+function toggleStatus(row, val) {
+  const promise = val ? taskService.enable(row.id) : taskService.disable(row.id)
+  promise.then(() => {
+    ElMessage.success(val ? '已激活' : '已停止')
+  }).catch(() => {
+    row.status = val ? 0 : 1
     ElMessage.error('操作失败')
   })
-  ElMessage.success(newVal ? '已激活' : '已停止')
 }
 function removeTask(row) { taskService.remove(row.id, () => loadTasks()) }
 </script>
