@@ -39,12 +39,13 @@
         </el-table-column>
       </el-table>
       </div>
-      <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="sizes,prev,pager,next,total" size="small" @change="loadHosts" /></div>
+      <div class="pagination"><Pagination v-model="page" v-model:page-size="pageSize" :total="total" @change="loadHosts" /></div>
     </div>
   </div>
 </template>
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
+import Pagination from '@/components/Pagination.vue'
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'

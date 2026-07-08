@@ -7,11 +7,12 @@
       <el-table-column prop="ip" label="登录IP" />
       <el-table-column label="登录时间"><template #default="{row}">{{ fmt(row.created) }}</template></el-table-column>
     </el-table></div>
-    <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="prev,pager,next,total" size="small" @change="loadLogs" /></div>
+    <div class="pagination"><Pagination v-model="page" :page-size="pageSize" :total="total" :show-sizes="false" @change="loadLogs" /></div>
   </div></div>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
+import Pagination from "@/components/Pagination.vue"
 import systemService from '@/api/system'
 const logs = ref([]); const total = ref(0); const loading = ref(false)
 const page = ref(1); const pageSize = ref(20)

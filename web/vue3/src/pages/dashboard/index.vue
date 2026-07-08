@@ -86,7 +86,7 @@
       </el-table>
       </div>
       <div class="pagination">
-        <el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" :page-sizes="[20,50,100]" layout="sizes,prev,pager,next,total" size="small" @change="loadTasks" />
+        <Pagination v-model="page" v-model:page-size="pageSize" :total="total" :sizes="[20,50,100]" @change="loadTasks" />
       </div>
     </div>
     <TaskFormDialog v-model="dialogVisible" :task-id="editingTaskId" @saved="loadTasks" />
@@ -97,6 +97,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { Search, Refresh, Plus, ArrowDown } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
+import Pagination from "@/components/Pagination.vue"
 import StatCard from '@/components/StatCard.vue'
 import TaskDetail from '@/components/TaskDetail.vue'
 import TaskFormDialog from '@/pages/task/edit.vue'

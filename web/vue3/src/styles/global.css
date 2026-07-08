@@ -63,63 +63,6 @@ body {
   margin-top: 16px;
 }
 
-/* ===== 清爽分页风格 ===== */
-.page-pagination .el-pagination {
-  --el-pagination-bg-color: transparent;
-}
-/* 去掉默认的灰色 padding */
-.page-pagination .el-pagination button,
-.page-pagination .el-pagination .el-pager li {
-  background: transparent !important;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  min-width: 36px;
-  height: 36px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #555;
-  transition: all 0.15s;
-}
-.page-pagination .el-pagination button:hover,
-.page-pagination .el-pagination .el-pager li:hover {
-  color: var(--color-primary);
-  border-color: var(--color-primary);
-  background: var(--color-primary-light) !important;
-}
-/* 当前页 */
-.page-pagination .el-pagination .el-pager li.is-active {
-  background: var(--color-primary) !important;
-  border-color: var(--color-primary);
-  color: #fff;
-  font-weight: 600;
-  box-shadow: 0 2px 6px rgba(79,70,229,0.25);
-}
-/* 每页条数选择器 */
-.page-pagination .el-pagination .el-select .el-input__wrapper {
-  border-radius: 8px;
-  border-color: #e5e7eb;
-  box-shadow: none;
-}
-/* 总数文字 */
-.page-pagination .el-pagination .el-pagination__total {
-  font-size: 13px;
-  color: var(--color-text-muted);
-  margin-right: 12px;
-}
-/* 跳转输入框 */
-.page-pagination .el-pagination .el-pagination__jump .el-input__wrapper {
-  border-radius: 8px;
-  border-color: #e5e7eb;
-  box-shadow: none;
-}
-/* 整体间距 */
-.page-pagination .el-pagination {
-  gap: 4px;
-}
-.page-pagination .el-pagination .el-pager {
-  gap: 4px;
-}
-
 /* ===== 统一表格风格 ===== */
 .el-table.task-table {
   border: none;

@@ -61,7 +61,7 @@
       </el-table-column>
     </el-table>
     </div>
-    <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="sizes,prev,pager,next,total" size="small" @change="loadLogs" /></div>
+    <div class="pagination"><Pagination v-model="page" v-model:page-size="pageSize" :total="total" @change="loadLogs" /></div>
     <el-dialog v-model="dialogVisible" title="执行结果" width="680px">
       <h4>命令</h4>
       <pre>{{ currentResult.command }}</pre>
@@ -72,6 +72,7 @@
 </template>
 <script setup>
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import Pagination from "@/components/Pagination.vue"
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import taskLogService from '@/api/taskLog'

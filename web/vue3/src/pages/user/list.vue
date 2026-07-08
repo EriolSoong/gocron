@@ -30,12 +30,13 @@
         </el-table-column>
       </el-table>
       </div>
-      <div class="pagination"><el-pagination v-model:current-page="page" v-model:page-size="pageSize" :total="total" layout="prev,pager,next,total" size="small" @change="loadUsers" /></div>
+      <div class="pagination"><Pagination v-model="page" :page-size="pageSize" :total="total" :show-sizes="false" @change="loadUsers" /></div>
     </div>
   </div>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
+import Pagination from '@/components/Pagination.vue'
 import { Plus } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import userService from '@/api/user'
