@@ -14,6 +14,7 @@
         <el-button type="primary" @click="loadLogs">搜索</el-button>
       </div>
       <div class="actions">
+        <el-switch v-model="autoRefresh" active-text="自动刷新" inactive-text="手动" @change="toggleAutoRefresh" style="margin-right:12px" />
         <el-button v-if="userStore.isAdmin" type="danger" @click="clearLog">清空日志</el-button>
         <el-button @click="loadLogs">刷新</el-button>
       </div>
@@ -70,7 +71,7 @@
   </div></div>
 </template>
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import taskLogService from '@/api/taskLog'
@@ -80,14 +81,25 @@ const logs = ref([]); const total = ref(0); const loading = ref(false)
 const page = ref(1); const pageSize = ref(20)
 const search = reactive({ task_id: '', status: '' })
 const dialogVisible = ref(false); const currentResult = reactive({ command: '', result: '' })
+	const autoRefresh = ref(false)
+	let refreshTimer = null
 
-onMounted(() => loadLogs())
+	onMounted(() => loadLogs())
+	onUnmounted(() => { if (refreshTimer) clearInterval(refreshTimer) })
 
 function loadLogs() {
   loading.value = true
   taskLogService.list({ page: page.value, page_size: pageSize.value, task_id: search.task_id, status: search.status }, data => {
     logs.value = data.data || []; total.value = data.total || 0; loading.value = false
   })
+}
+function toggleAutoRefresh(val) {
+  if (val) {
+    refreshTimer = setInterval(() => loadLogs(), 10000)
+  } else {
+    clearInterval(refreshTimer)
+    refreshTimer = null
+  }
 }
 function clearLog() {
   ElMessageBox.confirm('确定清空所有日志?', '提示').then(() => taskLogService.clear(() => { page.value = 1; loadLogs() })).catch(() => {})
