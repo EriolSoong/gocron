@@ -187,10 +187,17 @@ func dashboardStats(ctx *macaron.Context) string {
 		hostTotal = int64(len(allHosts))
 	}
 
+	// 24h 内失败的任务执行次数
+	failed24h, err := models.Db.Where("status = ? AND start_time > ?",
+		0, time.Now().Add(-24*time.Hour)).Count(new(models.TaskLog))
+	if err != nil {
+		failed24h = 0
+	}
+
 	return jsonResp.Success(utils.SuccessContent, map[string]interface{}{
 		"total_tasks":     total,
 		"active_tasks":    activeTotal,
-		"failed_last_24h": 0,
+		"failed_last_24h": failed24h,
 		"online_hosts":    hostTotal,
 	})
 }
