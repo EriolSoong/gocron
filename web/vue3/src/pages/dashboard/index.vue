@@ -148,13 +148,14 @@ function loadTasks() {
 }
 function runTask(row) { taskService.run(row.id, () => ElMessage.success('任务已开始执行')) }
 function toggleStatus(row) {
-  if (row.status) {
-    taskService.enable(row.id)
-    ElMessage.success('已激活')
-  } else {
-    taskService.disable(row.id)
-    ElMessage.success('已停止')
-  }
+  const newVal = row.status
+  const promise = newVal ? taskService.enable(row.id) : taskService.disable(row.id)
+  promise.catch(() => {
+    // API 失败，回滚开关到旧值
+    row.status = newVal ? 0 : 1
+    ElMessage.error('操作失败')
+  })
+  ElMessage.success(newVal ? '已激活' : '已停止')
 }
 function removeTask(row) { taskService.remove(row.id, () => loadTasks()) }
 </script>
