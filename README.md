@@ -25,38 +25,39 @@
 
 ## 核心特性
 
-| 类别       | 功能                                                                 |
-|----------|--------------------------------------------------------------------|
-| 🕐 调度    | crontab 表达式精确到秒，支持主/子任务依赖（强依赖 / 弱依赖）                           |
-| 🔧 执行    | Shell 命令（远程节点执行） / HTTP 请求（调度器直接执行，支持 GET / POST）                  |
+| 类别      | 功能                                                                                         |
+| --------- | -------------------------------------------------------------------------------------------- |
+| 🕐 调度   | crontab 表达式精确到秒，支持主/子任务依赖（强依赖 / 弱依赖）                                 |
+| 🔧 执行   | Shell 命令（远程节点执行） / HTTP 请求（调度器直接执行，支持 GET / POST）                    |
 | 📦 HTTP   | POST 模式支持自定义 Headers、JSON / Form-Data / URL-Encoded 三种请求体，可粘贴整段 JSON 文本 |
-| 🔄 容错    | 失败自动重试（次数 + 间隔均可配），超时强制终止，单实例运行互斥                              |
-| 🔔 通知    | 邮件 / 飞书机器人 / 企业微信机器人 / Webhook，自定义模板 + 关键字触发                       |
-| 👥 权限    | 多用户、管理员 / 普通用户角色，操作日志（登录日志、任务执行日志）                                |
-| 📊 仪表盘   | 首页统计卡片（总任务数 / 运行中 / 24h 失败 / 在线节点），搜索 + 筛选 + 分页                    |
+| 🔄 容错   | 失败自动重试（次数 + 间隔均可配），超时强制终止，单实例运行互斥                              |
+| 🔔 通知   | 邮件 / 飞书机器人 / 企业微信机器人 / Webhook，自定义模板 + 关键字触发                        |
+| 👥 权限   | 多用户、管理员 / 普通用户角色，操作日志（登录日志、任务执行日志）                            |
+| 📊 仪表盘 | 首页统计卡片（总任务数 / 运行中 / 24h 失败 / 在线节点），搜索 + 筛选 + 分页                  |
 
 ---
 
 ## 架构概览
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                      浏览器 (Vue 3)                       │
-│              http://localhost:5920                       │
-└──────────────────────┬──────────────────────────────────┘
-                       │ HTTP
-┌──────────────────────▼──────────────────────────────────┐
-│                  调度器 (gocron)                         │
-│  • 定时调度 (cron)    • Web 管理界面                       │
-│  • 任务日志          • 通知 (邮件/飞书/企微/Webhook)         │
-│  • 用户认证 (JWT)     • API 接口                          │
-└──────┬──────────────────────────────────┬───────────────┘
-       │ gRPC (TLS 可选)                   │ HTTP
-┌──────▼──────────┐              ┌────────▼──────────────┐
-│  任务节点 A       │              │  任务节点 B              │
-│  (gocron-node)   │              │  (gocron-node)         │
-│  监听 :5921      │              │  监听 :5921            │
-└─────────────────┘              └───────────────────────┘
+```mermaid
+flowchart TD
+    A[浏览器 Vue 3<br/>:5920] -->|HTTP| B[调度器 gocron]
+
+    B -->|gRPC / TLS| C[任务节点 A<br/>gocron-node :5921]
+    B -->|gRPC / TLS| D[任务节点 B<br/>gocron-node :5921]
+    B -->|HTTP| E[外部 API / Webhook]
+
+    subgraph 调度器
+        B1[定时调度 cron]
+        B2[Web 管理界面]
+        B3[任务日志]
+        B4[通知推送]
+        B5[用户认证 JWT]
+    end
+
+    subgraph 任务节点
+        C1[执行 Shell 命令]
+    end
 ```
 
 - **调度器** 负责定时触发、分发命令、记录日志、发送通知
@@ -85,14 +86,11 @@
    make build
    ./bin/gocron web -e dev
    ```
-
 2. **打开浏览器** `http://localhost:5920`
-
 3. **跟随安装向导**完成初始化：
 
    - **数据库配置** — 填写 MySQL/PostgreSQL 连接信息
    - **管理员账号** — 创建第一个管理员账户
-
 4. 安装完成后自动跳转登录页。
 
 ### 启动任务节点（可选，仅 Shell 任务需要）
@@ -128,13 +126,13 @@ go build -o bin/gocron-node ./cmd/node
 秒 分 时 日 月 周
 ```
 
-| 表达式               | 含义              |
-|-------------------|-----------------|
-| `0 */5 * * * *`  | 每 5 分钟执行一次      |
-| `0 0 2 * * *`    | 每天凌晨 2 点执行      |
+| 表达式             | 含义                    |
+| ------------------ | ----------------------- |
+| `0 */5 * * * *`  | 每 5 分钟执行一次       |
+| `0 0 2 * * *`    | 每天凌晨 2 点执行       |
 | `0 0 4 * * 0`    | 每周日凌晨 4 点执行     |
 | `0 30 9 1 * *`   | 每月 1 号上午 9:30 执行 |
-| `*/30 * * * * *` | 每 30 秒执行一次       |
+| `*/30 * * * * *` | 每 30 秒执行一次        |
 
 > 编辑任务时输入表达式会**实时预览**下一次及后续 5 次执行时间。
 
@@ -156,11 +154,11 @@ go build -o bin/gocron-node ./cmd/node
 
 ### 主任务 & 子任务（任务依赖）
 
-```
-主任务（父任务）
-  ├── 子任务 A
-  ├── 子任务 B
-  └── 子任务 C
+```mermaid
+flowchart LR
+    A[主任务<br/>cron 定时触发] -->|强依赖| B[子任务 A]
+    A -->|弱依赖| C[子任务 B]
+    A -->|弱依赖| D[子任务 C]
 ```
 
 - **强依赖**: 主任务执行成功后才运行子任务
@@ -169,14 +167,14 @@ go build -o bin/gocron-node ./cmd/node
 
 ### 高级配置
 
-| 参数         | 说明                            | 默认值        |
-|------------|-------------------------------|------------|
-| 超时时间       | 任务执行超过该秒数强制终止                | 0（不限制）     |
-| 单实例运行      | 前次未完成时是否跳过本次调度               | 是          |
-| 失败重试次数     | 执行失败后重试 N 次，取值 0-10          | 0（不重试）     |
-| 重试间隔       | 每次重试之间的等待秒数，取值 0-3600        | 0（系统默认递增间隔） |
-| 通知状态       | 不通知 / 失败时通知 / 总是通知 / 关键字匹配通知  | 不通知        |
-| 通知类型       | 邮件 / 飞书 / 企业微信 / Webhook      | -          |
+| 参数         | 说明                                            | 默认值                |
+| ------------ | ----------------------------------------------- | --------------------- |
+| 超时时间     | 任务执行超过该秒数强制终止                      | 0（不限制）           |
+| 单实例运行   | 前次未完成时是否跳过本次调度                    | 是                    |
+| 失败重试次数 | 执行失败后重试 N 次，取值 0-10                  | 0（不重试）           |
+| 重试间隔     | 每次重试之间的等待秒数，取值 0-3600             | 0（系统默认递增间隔） |
+| 通知状态     | 不通知 / 失败时通知 / 总是通知 / 关键字匹配通知 | 不通知                |
+| 通知类型     | 邮件 / 飞书 / 企业微信 / Webhook                | -                     |
 
 ---
 
@@ -208,13 +206,13 @@ go build -o bin/gocron-node ./cmd/node
 
 ### 通知模板变量
 
-| 变量           | 说明       |
-|--------------|----------|
-| `{{TaskId}}`  | 任务 ID    |
+| 变量             | 说明         |
+| ---------------- | ------------ |
+| `{{TaskId}}`   | 任务 ID      |
 | `{{TaskName}}` | 任务名称     |
-| `{{Status}}`  | 执行结果状态   |
-| `{{Result}}`  | 任务执行输出   |
-| `{{Remark}}`  | 任务备注     |
+| `{{Status}}`   | 执行结果状态 |
+| `{{Result}}`   | 任务执行输出 |
+| `{{Remark}}`   | 任务备注     |
 
 ---
 
@@ -334,19 +332,19 @@ make dev-vue3       # 访问 http://localhost:8080
 
 ### Makefile 常用命令
 
-| 命令               | 说明                                      |
-|------------------|-----------------------------------------|
-| `make build`     | 构建前端 + statik 嵌入 + 编译调度器和节点二进制           |
-| `make run`       | `make build` + 启动服务                      |
-| `make gocron`    | 仅编译调度器                                  |
-| `make node`      | 仅编译任务节点                                 |
-| `make build-vue3` | 构建 Vue 3 前端 + statik 嵌入                  |
-| `make dev-vue3`  | 启动前端 Vite 开发服务器（热重载）                    |
-| `make test`      | 运行 Go 测试                                |
-| `make package`   | 打包当前平台的发布包                              |
+| 命令                 | 说明                                            |
+| -------------------- | ----------------------------------------------- |
+| `make build`       | 构建前端 + statik 嵌入 + 编译调度器和节点二进制 |
+| `make run`         | `make build` + 启动服务                       |
+| `make gocron`      | 仅编译调度器                                    |
+| `make node`        | 仅编译任务节点                                  |
+| `make build-vue3`  | 构建 Vue 3 前端 + statik 嵌入                   |
+| `make dev-vue3`    | 启动前端 Vite 开发服务器（热重载）              |
+| `make test`        | 运行 Go 测试                                    |
+| `make package`     | 打包当前平台的发布包                            |
 | `make package-all` | 打包 Windows / Linux / macOS 全平台包           |
-| `make clean`     | 清理构建产物（bin/ / dist/ / node_modules/）     |
-| `make lint`      | 运行 golangci-lint                         |
+| `make clean`       | 清理构建产物（bin/ / dist/ / node_modules/）    |
+| `make lint`        | 运行 golangci-lint                              |
 
 ### 项目结构
 
@@ -395,43 +393,43 @@ Auth-Token: <token>
 
 ### 主要接口
 
-| 方法     | 路径                    | 说明            |
-|--------|-----------------------|---------------|
-| GET    | `/api/install/status`  | 安装状态          |
-| POST   | `/api/install/store`  | 执行安装          |
-| POST   | `/api/user/login`     | 用户登录          |
-| GET    | `/api/task`           | 任务列表（支持筛选分页）  |
-| GET    | `/api/task/:id`       | 任务详情          |
-| POST   | `/api/task/store`     | 创建/更新任务       |
-| POST   | `/api/task/enable/:id` | 激活任务          |
-| POST   | `/api/task/disable/:id` | 暂停任务          |
-| GET    | `/api/task/run/:id`   | 手动执行一次        |
-| GET    | `/api/task/log`       | 任务执行日志        |
-| GET    | `/api/dashboard/stats` | 仪表盘统计数据       |
-| GET    | `/api/host`           | 主机列表          |
-| GET    | `/api/system/mail`    | 邮件配置          |
-| GET    | `/api/system/feishu`  | 飞书配置          |
-| GET    | `/api/system/wecom`   | 企业微信配置        |
-| GET    | `/api/system/webhook` | Webhook 配置     |
-| GET    | `/api/system/login-log` | 登录日志          |
+| 方法 | 路径                      | 说明                     |
+| ---- | ------------------------- | ------------------------ |
+| GET  | `/api/install/status`   | 安装状态                 |
+| POST | `/api/install/store`    | 执行安装                 |
+| POST | `/api/user/login`       | 用户登录                 |
+| GET  | `/api/task`             | 任务列表（支持筛选分页） |
+| GET  | `/api/task/:id`         | 任务详情                 |
+| POST | `/api/task/store`       | 创建/更新任务            |
+| POST | `/api/task/enable/:id`  | 激活任务                 |
+| POST | `/api/task/disable/:id` | 暂停任务                 |
+| GET  | `/api/task/run/:id`     | 手动执行一次             |
+| GET  | `/api/task/log`         | 任务执行日志             |
+| GET  | `/api/dashboard/stats`  | 仪表盘统计数据           |
+| GET  | `/api/host`             | 主机列表                 |
+| GET  | `/api/system/mail`      | 邮件配置                 |
+| GET  | `/api/system/feishu`    | 飞书配置                 |
+| GET  | `/api/system/wecom`     | 企业微信配置             |
+| GET  | `/api/system/webhook`   | Webhook 配置             |
+| GET  | `/api/system/login-log` | 登录日志                 |
 
 ---
 
 ## 技术栈
 
-| 组件       | 技术                                                         |
-|----------|------------------------------------------------------------|
-| 后端框架     | [Macaron](https://go-macaron.com/)                         |
-| 定时调度     | [Cron](https://github.com/robfig/cron)                     |
-| ORM      | [Xorm](https://xorm.io/)                                    |
-| 数据库      | MySQL / PostgreSQL                                          |
-| RPC      | [gRPC](https://grpc.io/)                                   |
-| 认证       | JWT                                                        |
-| 前端框架     | [Vue 3](https://vuejs.org/) (Composition API)              |
-| UI 框架    | [Element Plus](https://element-plus.org/)                  |
-| 构建工具     | [Vite](https://vitejs.dev/)                                |
-| 状态管理     | [Pinia](https://pinia.vuejs.org/)                          |
-| 前端嵌入     | [Statik](https://github.com/rakyll/statik)                 |
+| 组件     | 技术                                         |
+| -------- | -------------------------------------------- |
+| 后端框架 | [Macaron](https://go-macaron.com/)            |
+| 定时调度 | [Cron](https://github.com/robfig/cron)        |
+| ORM      | [Xorm](https://xorm.io/)                      |
+| 数据库   | MySQL / PostgreSQL                           |
+| RPC      | [gRPC](https://grpc.io/)                      |
+| 认证     | JWT                                          |
+| 前端框架 | [Vue 3](https://vuejs.org/) (Composition API) |
+| UI 框架  | [Element Plus](https://element-plus.org/)     |
+| 构建工具 | [Vite](https://vitejs.dev/)                   |
+| 状态管理 | [Pinia](https://pinia.vuejs.org/)             |
+| 前端嵌入 | [Statik](https://github.com/rakyll/statik)    |
 
 ---
 
