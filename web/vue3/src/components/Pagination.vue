@@ -1,10 +1,5 @@
 <template>
   <div v-if="total > 0" class="custom-pager">
-    <span class="pager-sizes" v-if="showSizes">
-      <select :value="pageSize" @change="sizeChanged" class="pager-select">
-        <option v-for="s in sizes" :key="s" :value="s">{{ s }}条/页</option>
-      </select>
-    </span>
     <span class="pager-total">共 {{ totalPages }} 页</span>
     <div class="pager-controls">
       <button class="pager-btn" :disabled="modelValue <= 1" @click="go(modelValue - 1)">‹</button>
@@ -14,6 +9,11 @@
       </template>
       <button class="pager-btn" :disabled="modelValue >= totalPages" @click="go(modelValue + 1)">›</button>
     </div>
+    <span class="pager-sizes" v-if="showSizes">
+      <select :value="pageSize" @change="sizeChanged" class="pager-select">
+        <option v-for="s in sizes" :key="s" :value="s">{{ s }}条/页</option>
+      </select>
+    </span>
   </div>
 </template>
 
