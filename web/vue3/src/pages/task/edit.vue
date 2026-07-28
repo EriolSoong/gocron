@@ -216,6 +216,8 @@ function submit() {
       ElMessage.success('保存成功')
       emit('update:modelValue', false)
       emit('saved')
+    }).finally(() => {
+      submitting.value = false
     })
   })
 }
