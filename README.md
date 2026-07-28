@@ -232,18 +232,25 @@ cd gocron-v*
 
 ### 方式二：Docker
 
-```bash
-# 拉取镜像
-docker pull ouqg/gocron
+项目根目录包含 `Dockerfile`，可直接构建本地镜像：
 
-# 运行（需提前启动 MySQL 容器）
+```bash
+# 1. 编译 Linux 二进制（macOS / Windows 需交叉编译）
+GOOS=linux GOARCH=amd64 go build -o bin/gocron-linux-amd64 ./cmd/gocron
+
+# 2. 构建镜像
+docker build -t gocron .
+
+# 3. 运行（需提前启动 MySQL 容器）
 docker run --name gocron \
   --link mysql:db \
   -p 5920:5920 \
-  -v /path/to/conf:/app/conf \
-  -v /path/to/log:/app/log \
-  -d ouqg/gocron
+  -v $(pwd)/conf:/app/conf \
+  -v $(pwd)/log:/app/log \
+  -d gocron
 ```
+
+> **提示：** 首次访问 `http://localhost:5920` 会进入安装向导，填写 MySQL 容器地址（如 `db:3306`）即可。
 
 ### 方式三：源码编译
 
