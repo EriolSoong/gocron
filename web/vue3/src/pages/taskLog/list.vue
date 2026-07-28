@@ -72,12 +72,14 @@
 </template>
 <script setup>
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import { useRoute } from 'vue-router'
 import Pagination from "@/components/Pagination.vue"
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import taskLogService from '@/api/taskLog'
 
 const userStore = useUserStore()
+const route = useRoute()
 const logs = ref([]); const total = ref(0); const loading = ref(false)
 const page = ref(1); const pageSize = ref(20)
 const search = reactive({ task_id: '', status: '' })

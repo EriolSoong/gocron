@@ -31,7 +31,6 @@ conf
 profile/*
 /gocron
 /gocron-node
-/bin
 /web/public/static
 /web/public/index.html
 /gocron-package
