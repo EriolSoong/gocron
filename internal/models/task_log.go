@@ -96,4 +96,8 @@ func (taskLog *TaskLog) parseWhere(session *xorm.Session, params CommonMap) {
 	if ok && status.(int) > -1 {
 		session.And("status = ?", status)
 	}
+	name, ok := params["Name"]
+	if ok && name.(string) != "" {
+		session.And("name LIKE ?", "%"+name.(string)+"%")
+	}
 }

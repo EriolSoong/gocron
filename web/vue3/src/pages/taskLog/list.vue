@@ -3,7 +3,8 @@
     <h2 style="margin-bottom:16px">任务日志</h2>
     <div class="toolbar">
       <div class="search-bar">
-        <el-input v-model="search.task_id" placeholder="任务ID" clearable style="width:120px" />
+        <el-input v-model="search.name" placeholder="任务名称" clearable style="width:160px" />
+	        <el-input v-model="search.task_id" placeholder="任务ID" clearable style="width:110px" />
         <el-select v-model="search.status" placeholder="状态" clearable style="width:110px">
           <el-option label="全部" value="" />
           <el-option label="成功" value="2" />
@@ -82,17 +83,20 @@ const userStore = useUserStore()
 const route = useRoute()
 const logs = ref([]); const total = ref(0); const loading = ref(false)
 const page = ref(1); const pageSize = ref(20)
-const search = reactive({ task_id: '', status: '' })
+const search = reactive({ name: '', task_id: '', status: '' })
 const dialogVisible = ref(false); const currentResult = reactive({ command: '', result: '' })
-	const autoRefresh = ref(false)
-	let refreshTimer = null
+const autoRefresh = ref(false)
+let refreshTimer = null
 
-	onMounted(() => loadLogs())
-	onUnmounted(() => { if (refreshTimer) clearInterval(refreshTimer) })
+onMounted(() => {
+  if (route.query.task_id) search.task_id = route.query.task_id
+  loadLogs()
+})
+onUnmounted(() => { if (refreshTimer) clearInterval(refreshTimer) })
 
 function loadLogs() {
   loading.value = true
-  taskLogService.list({ page: page.value, page_size: pageSize.value, task_id: search.task_id, status: search.status }, data => {
+  taskLogService.list({ page: page.value, page_size: pageSize.value, name: search.name, task_id: search.task_id, status: search.status }, data => {
     logs.value = data.data || []; total.value = data.total || 0; loading.value = false
   })
 }
