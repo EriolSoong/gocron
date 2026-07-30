@@ -9,8 +9,9 @@
     <div class="page-card task-card">
       <div class="toolbar">
         <div class="search-bar">
-          <el-input v-model="search.name" placeholder="搜索任务名称、标签..." clearable :prefix-icon="Search" @keyup.enter="search" style="width:260px" />
-          <el-select v-model="search.protocol" placeholder="执行方式" clearable style="width:130px"><el-option label="全部" value="" /><el-option label="HTTP" value="1" /><el-option label="Shell" value="2" /></el-select>
+          <el-input v-model="search.name" placeholder="任务名称" clearable style="width:160px" @keyup.enter="loadTasks" />
+          <el-input v-model="search.tag" placeholder="标签" clearable style="width:120px" @keyup.enter="loadTasks" />
+          <el-select v-model="search.protocol" placeholder="执行方式" clearable style="width:120px"><el-option label="全部" value="" /><el-option label="HTTP" value="1" /><el-option label="Shell" value="2" /></el-select>
           <el-select v-model="search.status" placeholder="状态" clearable style="width:120px"><el-option label="全部" value="" /><el-option label="激活" value="2" /><el-option label="停止" value="1" /></el-select>
           <el-button type="primary" :icon="Search" @click="loadTasks">搜索</el-button>
         </div>
@@ -110,7 +111,7 @@ const total = ref(0)
 const loading = ref(false)
 const page = ref(1)
 const pageSize = ref(20)
-const search = reactive({ name: '', protocol: '', status: '' })
+const search = reactive({ name: '', tag: '', protocol: '', status: '' })
 const stats = reactive({ total_tasks: 0, active_tasks: 0, failed_last_24h: 0, online_hosts: 0 })
 const dialogVisible = ref(false)
 const editingTaskId = ref(null)
