@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"strconv"
 	"strings"
 	"sync"
@@ -260,9 +259,9 @@ func (h *HTTPHandler) Run(taskModel models.Task, taskUniqueId int64) (result str
 			resp = httpclient.PostParams(taskModel.Command, params, taskModel.Timeout)
 		}
 	}
-	// 返回状态码非200，均为失败
-	if resp.StatusCode != http.StatusOK {
-		return resp.Body, fmt.Errorf("HTTP状态码非200-->%d", resp.StatusCode)
+	// 返回状态码2xx为成功，其余为失败
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return resp.Body, fmt.Errorf("HTTP状态码非2xx-->%d", resp.StatusCode)
 	}
 
 	return resp.Body, err
